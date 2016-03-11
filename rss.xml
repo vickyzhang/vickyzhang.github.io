@@ -2,12 +2,12 @@
 <rss version="2.0">  <channel>
     <title>Blog Title</title>
     <link>http://sample.com</link>
-    <pubDate>11 Mar 16 10:45 CST</pubDate>
+    <pubDate>11 Mar 16 10:55 CST</pubDate>
     <item>
       <title>test</title>
       <link>http://sample.com/default/test/</link>
       <pubDate>2016-03-11 12:00:00 +0800</pubDate>
-      <description></description>
+      <description>&lt;p&gt;感谢你使用Gor编写博客&#xA;本文位于 posts/first-blog.md , 你可以任意删掉,修改这个文件&#xA;文件开头是当前文章的元数据&lt;/p&gt;&#xA;&#xA;&lt;p&gt;date为自动生成, 当然,你可以修改,这是你的自由&#xA;permalink 可以是固定地址,也可以由&lt;/p&gt;&#xA;</description>
     </item>
     <item>
       <title>你的第一篇博客</title>
