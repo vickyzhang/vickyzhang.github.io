@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>远程连接Linux Mysql 提示1045</title>
+  
+    <meta name="author" content="Firstname Lastname">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css" type="text/css" rel="stylesheet" media="all">
+ 
+
+    <!-- Le fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+  </head>
+
+  <body>
+
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">Vicky&#39;s color</a>
+          <ul class="nav">
+            
+              
+
+
+  <li><a href="/archive">Archive</a></li>
+
+
+            
+              
+
+
+  <li><a href="/tags">Tags</a></li>
+
+
+            
+              
+
+
+  <li><a href="/categories">Categories</a></li>
+
+
+            
+              
+
+
+  <li><a href="/pages">Pages</a></li>
+
+
+            
+              
+
+
+  <li><a href="/about">About Me</a></li>
+
+
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        <div class="page-header">
+  <h1>远程连接Linux Mysql 提示1045 </h1>
+</div>
+
+<div class="row">
+  <div class="span8">
+    <p>远程使用数据库工具 软件连接 mySql数据时，连接出现 2003-Can’t connect to MySQL on
+’192.168.1.2’(10061)错误时，是由于MySQL不准许远程连接。</p>
+
+<p>如果没有给远程登录用户添加所有机器都能访问的权限，将会出现“1045-Access denied for user root@IT(using
+password:NO)”，这表明需要添加权限；</p>
+
+<p>解决方法：</p>
+
+<p>首先进入mysql：</p>
+
+<pre><code>mysql -hlocalhost -uroot -ppassword
+</code></pre>
+
+<p>进入mysql &gt;</p>
+
+<p>添加一个远程用户，用户名为username，密码为password，</p>
+
+<p>支持所以ip远程连接</p>
+
+<pre><code>mysql &gt;GRANT ALL PRIVILEGES ON *.* TO username@&quot;%&quot; IDENTIFIED BY
+</code></pre>
+
+<p>&lsquo;password&rsquo;</p>
+
+<p>如想指定ip 远程访问</p>
+
+<pre><code>mysql &gt;GRANT ALL PRIVILEGES ON *.* TO username@127.0.0.1
+IDENTIFIED BY 'password'
+</code></pre>
+
+<p>说明： grant 权限1,权限2,…权限n on 数据库名称.表名称 to 用户名@用户地址 identified by ‘连接口令’;</p>
+
+<p>权限1,权限2,…权限n代表select,insert,update,delete,create,drop,index,alter,grant,refere
+nces,reload,shutdown,process,file等14个权限。</p>
+
+<p>当权限1,权限2,…权限n被all privileges或者all代替，表示赋予用户全部权限。</p>
+
+<p>当数据库名称.表名称被*.*代替，表示赋予用户操作服务器上所有数据库所有表的权限。</p>
+
+<p>用户地址可以是localhost，也可以是ip地址、机器名字、域名。也可以用’%&lsquo;表示从任何地址连接。</p>
+
+<p>‘连接口令’不能为空，否则创建失败。</p>
+
+<ol>
+<li>grant all 赋予所有的权限</li>
+<li>gamesp.* 数据库 gamesp 中所有的表</li>
+<li>newuser 用户名</li>
+<li>@localhost 在本地电脑上的 mysql server 服务器</li>
+<li>identfified by &lsquo;password&rsquo; 设置密码<br /></li>
+</ol>
+
+    <hr>
+    <div class="pagination">
+      <ul>
+        <ul>
+          
+            <li class="prev"><a href="/general/%E6%9F%A5%E7%9C%8Bsvn%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E7%9A%84%E8%B7%AF%E5%BE%84%E4%BF%A1%E6%81%AF/" title="查看svn服务器端的路径信息">&larr; Previous</a></li>
+          
+          
+
+            <li><a href="/archive">Archive</a></li>
+
+          
+            <li class="next"><a href="/general/Linux-%E6%90%AD%E5%BB%BASVN-%E5%A4%9A%E7%89%88%E6%9C%AC%E5%BA%93/" title="Linux 搭建SVN 多版本库">Next &rarr;</a></li>
+          
+          
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    
+<div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+  </div>
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2014-11-18</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/categories/#general-ref">general <span>21</span></a>
+</li>
+    
+    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+    </ul>
+  </div>
+</div>
+
+      </div>
+
+      <footer>
+        <p>&copy; Firstname Lastname 2013 
+          with help from <a href="http://github.com/wendal/gor" target="_blank" title="Gor -- Fast Blog">Gor</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+		  and Idea from <a href="http://ruhoh.com" target="_blank" title="The Definitive Technical Blogging Framework">ruhoh</a>
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    
+<script src="//cdnjscn.b0.upaiyun.com/libs/prettify/r298/prettify.min.js"></script>
+<script>
+  var pres = document.getElementsByTagName("pre");
+  for (var i=0; i < pres.length; ++i) {
+    pres[i].className = "prettyprint linenums";
+  }
+  prettyPrint();
+</script>
+
+    
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  var pluginUrl = '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
+  _gaq.push(['_require', 'inpage_linkid', pluginUrl]);
+  _gaq.push(['_setAccount', 'UA-123-12']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </body>
+</html>

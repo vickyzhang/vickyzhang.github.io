@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>About Me</title>
+    <title>JS 处理json字符串</title>
   
     <meta name="author" content="Firstname Lastname">
 
@@ -63,9 +63,9 @@
 
             
               
-  <li class="active"><a href="/about" class="active">About Me</a></li>
 
 
+  <li><a href="/about">About Me</a></li>
 
 
             
@@ -77,15 +77,97 @@
     <div class="container">
 
       <div class="content">
-        
-<div class="page-header">
-  <h1>About Me </h1>
+        <div class="page-header">
+  <h1>JS 处理json字符串 </h1>
 </div>
 
 <div class="row">
-  <div class="span12">
-    <p>Hello, how are you?</p>
+  <div class="span8">
+    <h3>JSON字符串:</h3>
 
+<pre><code>var str1 = '{ &quot;name&quot;: &quot;cxh&quot;, &quot;sex&quot;: &quot;man&quot; }';
+JSON对象:
+var str2 = { &quot;name&quot;: &quot;cxh&quot;, &quot;sex&quot;: &quot;man&quot; };
+</code></pre>
+
+<h3>一、JSON字符串转换为JSON对象</h3>
+
+<p>要运用上面的str1，必须运用下面的要领先转化为JSON对象：</p>
+
+<pre><code>//由JSON字符串转换为JSON对象
+var obj = eval('(' + str + ')');
+或者
+var obj = str.parseJSON(); //由JSON字符串转换为JSON对象
+或者
+var obj = JSON.parse(str); //由JSON字符串转换为JSON对象
+然后，就可以这样读取：
+Alert(obj.name);
+Alert(obj.sex);
+</code></pre>
+
+<p>特别留心：如果obj本来就是一个JSON对象，那么运用 eval（）函数转换后（哪怕是多次转换）还是JSON对象，但是运用 parseJSON（）函数处理后会有疑问（抛出语法异常）。</p>
+
+<h3>二、可以运用 toJSONString()或者全局要领 JSON.stringify()将JSON对象转化为JSON字符串。例如：</h3>
+
+<pre><code>var last=obj.toJSONString(); //将JSON对象转化为JSON字符
+或者
+var last=JSON.stringify(obj); //将JSON对象转化为JSON字符
+alert(last); 
+</code></pre>
+
+    <hr>
+    <div class="pagination">
+      <ul>
+        <ul>
+          
+            <li class="prev"><a href="/general/PHP-date%E5%87%BD%E6%95%B0%E5%B8%B8%E7%94%A8%E5%8F%82%E6%95%B0/" title="PHP date函数常用参数">&larr; Previous</a></li>
+          
+          
+
+            <li><a href="/archive">Archive</a></li>
+
+          
+            <li class="next"><a href="/general/%E7%BD%91%E7%AB%99%E4%B8%BB%E9%A2%98%E5%8F%98%E6%9B%B4/" title="网站主题变更">Next &rarr;</a></li>
+          
+          
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    
+<div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+  </div>
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2015-09-02</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/categories/#general-ref">general <span>21</span></a>
+</li>
+    
+    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+    </ul>
   </div>
 </div>
 

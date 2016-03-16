@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>About Me</title>
+    <title>SQL Server 学习2(数据库贴表)</title>
   
     <meta name="author" content="Firstname Lastname">
 
@@ -63,9 +63,9 @@
 
             
               
-  <li class="active"><a href="/about" class="active">About Me</a></li>
 
 
+  <li><a href="/about">About Me</a></li>
 
 
             
@@ -77,15 +77,82 @@
     <div class="container">
 
       <div class="content">
-        
-<div class="page-header">
-  <h1>About Me </h1>
+        <div class="page-header">
+  <h1>SQL Server 学习2(数据库贴表) </h1>
 </div>
 
 <div class="row">
-  <div class="span12">
-    <p>Hello, how are you?</p>
+  <div class="span8">
+    <p>数据库中一张表的数据 导入 另一张数据表</p>
 
+<p>当两张表的字段完全一致的时候，我们可以直接使用：insert into tab_a select * from tab_b</p>
+
+<p>有字段不同的情况写写法也类似：</p>
+
+<pre><code>INSERT INTO PS_JOBCODE_LANG
+(SETID,JOBCODE,LANGUAGE_CD,EFFDT,DESCR,DESCRSHORT,GVT_OFFICIAL_DESCR )  
+select SETID,JOBCODE,'ZHS',EFFDT,DESCR,DESCRSHORT,' ' from PS_JOBCODE_TBL
+where JOBCODE not in (select JOBCODE from PS_JOBCODE_LANG )
+</code></pre>
+
+<p>说明：LANGUAGE_CD 中的 LANGUAGE_CD 值固定为&rsquo;ZHS&rsquo; ，而GVT_OFFICIAL_DESCR 的值为空 并且这两个字段不存在于
+PS_JOBCODE_TBL 中，所以直接把值填入即可。</p>
+
+<p>（SQL Server 和Mysql 均可使用）</p>
+
+    <hr>
+    <div class="pagination">
+      <ul>
+        <ul>
+          
+            <li class="prev"><a href="/general/SQL-Server-%E5%AD%A6%E4%B9%A03%28%E5%85%B3%E4%BA%8Esql-server%E4%B8%AD%E6%96%87%E5%8F%96%E5%80%BC%E4%B8%8D%E5%AE%8C%E6%95%B4%E9%97%AE%E9%A2%98%29/" title="SQL Server 学习3(关于sql server中文取值不完整问题)">&larr; Previous</a></li>
+          
+          
+
+            <li><a href="/archive">Archive</a></li>
+
+          
+            <li class="next"><a href="/general/SQL-Server-%E5%AD%A6%E4%B9%A0/" title="SQL Server 学习">Next &rarr;</a></li>
+          
+          
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    
+<div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+  </div>
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2015-09-22</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/categories/#general-ref">general <span>21</span></a>
+</li>
+    
+    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+    </ul>
   </div>
 </div>
 

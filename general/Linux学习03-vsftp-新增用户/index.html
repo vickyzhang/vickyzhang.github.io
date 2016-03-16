@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>About Me</title>
+    <title>Linux学习03 vsftp 新增用户</title>
   
     <meta name="author" content="Firstname Lastname">
 
@@ -63,9 +63,9 @@
 
             
               
-  <li class="active"><a href="/about" class="active">About Me</a></li>
 
 
+  <li><a href="/about">About Me</a></li>
 
 
             
@@ -77,15 +77,98 @@
     <div class="container">
 
       <div class="content">
-        
-<div class="page-header">
-  <h1>About Me </h1>
+        <div class="page-header">
+  <h1>Linux学习03 vsftp 新增用户 </h1>
 </div>
 
 <div class="row">
-  <div class="span12">
-    <p>Hello, how are you?</p>
+  <div class="span8">
+    <p>新增个ftp用户 也是弄了小半天</p>
 
+<pre><code># useradd test  //新增用户test
+# passwd tset
+</code></pre>
+
+<p>//输入密码设置</p>
+
+<pre><code># usermod -d /home/php //设置权限
+# usermod -s /sbin/nologin test //限制test只能登录ftp
+# usermod -s /sbin/bash test //回复test正常
+</code></pre>
+
+<p>限制用户只能访问/home/test，不能访问其他路径</p>
+
+<p>修改/etc/vsftpd/vsftpd.conf如下：</p>
+
+<pre><code>#chroot_list_enable=YES //限制访问自身目录  
+#chroot_list_file=/etc/vsftpd/vsftpd.chroot_list  
+</code></pre>
+
+<p>编辑 vsftpd.chroot_list文件，将受限制的用户添加进去，每个用户名一行</p>
+
+<p>改完配置文件，不要忘记重启vsFTPd服务器</p>
+
+<pre><code># /etc/init.d/vsftpd restart  
+</code></pre>
+
+<p>如果需要允许用户修改密码，但是又没有telnet登录系统的权限：</p>
+
+<pre><code>#usermod -s /usr/bin/passwd test //用户telnet后将直接进入改密界面  
+</code></pre>
+
+    <hr>
+    <div class="pagination">
+      <ul>
+        <ul>
+          
+            <li class="prev"><a href="/general/apache-%E9%85%8D%E7%BD%AE%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA/" title="apache 配置虚拟主机">&larr; Previous</a></li>
+          
+          
+
+            <li><a href="/archive">Archive</a></li>
+
+          
+            <li class="next"><a href="/general/Linux-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/" title="Linux 学习笔记02">Next &rarr;</a></li>
+          
+          
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    
+<div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+  </div>
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2015-12-07</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/categories/#general-ref">general <span>21</span></a>
+</li>
+    
+    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+    </ul>
   </div>
 </div>
 

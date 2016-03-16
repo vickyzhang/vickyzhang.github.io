@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>About Me</title>
+    <title>apache 配置虚拟主机</title>
   
     <meta name="author" content="Firstname Lastname">
 
@@ -63,9 +63,9 @@
 
             
               
-  <li class="active"><a href="/about" class="active">About Me</a></li>
 
 
+  <li><a href="/about">About Me</a></li>
 
 
             
@@ -77,15 +77,89 @@
     <div class="container">
 
       <div class="content">
-        
-<div class="page-header">
-  <h1>About Me </h1>
+        <div class="page-header">
+  <h1>apache 配置虚拟主机 </h1>
 </div>
 
 <div class="row">
-  <div class="span12">
-    <p>Hello, how are you?</p>
+  <div class="span8">
+    <p>公司测试服务器默认80端口访问公司网站，近期新建一个项目，需要在测试服务器配置端口访问</p>
 
+<p>首先，修改apache 配置文件 httpd.conf</p>
+
+<pre><code>Listen 81 //监听81端口 
+
+&lt;VirtualHost *:81&gt;  
+    ServerAdmin www.59shopnc.com  
+    DocumentRoot &quot;/var/www2/shopnc&quot;  
+    ServerName www.59shopnc.com  
+    ErrorLog &quot;/tmp/logs/shopnc-error.log&quot;  
+    CustomLog &quot;/tmp/logs/shopnc-access.log&quot; common  
+    &lt;Directory &quot;/var/www2/shopnc&quot;&gt;  
+        Options Indexes FollowSymLinks  
+        AllowOverride None  
+        Order allow,deny  
+        Allow from all  //apache 2.2  
+        Require all granted  //apache 2.4  
+    &lt;/Directory&gt;  
+&lt;/VirtualHost&gt;  
+</code></pre>
+
+<p>重启apache</p>
+
+    <hr>
+    <div class="pagination">
+      <ul>
+        <ul>
+          
+          
+            <li class="prev disabled"><a>&larr; Previous</a></li>
+          
+
+            <li><a href="/archive">Archive</a></li>
+
+          
+            <li class="next"><a href="/general/Linux%E5%AD%A6%E4%B9%A003-vsftp-%E6%96%B0%E5%A2%9E%E7%94%A8%E6%88%B7/" title="Linux学习03 vsftp 新增用户">Next &rarr;</a></li>
+          
+          
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    
+<div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+  </div>
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2015-12-08</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/categories/#general-ref">general <span>21</span></a>
+</li>
+    
+    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+    </ul>
   </div>
 </div>
 

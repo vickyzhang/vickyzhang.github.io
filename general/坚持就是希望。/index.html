@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>坚持就是希望。</title>
+  
+    <meta name="author" content="Firstname Lastname">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css" type="text/css" rel="stylesheet" media="all">
+ 
+
+    <!-- Le fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+  </head>
+
+  <body>
+
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">Vicky&#39;s color</a>
+          <ul class="nav">
+            
+              
+
+
+  <li><a href="/archive">Archive</a></li>
+
+
+            
+              
+
+
+  <li><a href="/tags">Tags</a></li>
+
+
+            
+              
+
+
+  <li><a href="/categories">Categories</a></li>
+
+
+            
+              
+
+
+  <li><a href="/pages">Pages</a></li>
+
+
+            
+              
+
+
+  <li><a href="/about">About Me</a></li>
+
+
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        <div class="page-header">
+  <h1>坚持就是希望。 </h1>
+</div>
+
+<div class="row">
+  <div class="span8">
+    <p>文章标题虽然俗了点。但是却最能表达出我想说的。</p>
+
+<p>用了 Lunix服务器，配置了Lnmp环境，我本想着安装过程中，或者以后使用中，都有Eric
+帮我，所以在整个安装配置过程中，我都没有一点犹豫。哪知道，这次Eric
+采取半抛弃政策，把Lnmp的一键安装好后，就开始实施政策了。政策实施时，我提出反对，不过反对无效。Eric 说不要把服务器整崩了就算我厉害。
+幸好我还是厉害的。在配置 Nginx 虚拟目录时，配置WordPress中，问题不断，也有找Eric帮助的，总是还是弄出来了。</p>
+
+<p>问题总结如下：</p>
+
+<p>1.基础中的基础Linux 命令：<a href="http://www.ioesse.com/hqjs/upload/info.pdf">http://www.ioesse.com/hqjs/upload/info.pdf</a></p>
+
+<p>2.nginx 虚拟目录配置（可以在 /usr/local/nginx/conf /nginx.conf 中直接配置）</p>
+
+<p>在/usr/local/nginx/conf/vhost 新建vhost.conf</p>
+
+<p>然后配置server 配置过程中可以参考 /usr/local/nginx/conf /nginx.conf 中的server配置，（每个版有差异）。</p>
+
+<p>3.WordPress中的默认主题只显示一个？ 是由于lnmp下默认php禁用了scandir 函数（lnmp认为 scandir
+是危险函数），需要进入php.ini配置文件 /usr/local/php/etc/php.ini 中找到disable function
+,去掉scandir，然后重 启PHP服务 /etc/init.d/php-fpm restart 就可以了。</p>
+
+<p>4.WordPress下载主题，插件，删除插件时，都提示需要FTP账号密码？</p>
+
+<p>这是linux的机制问题，利用chown语句将网站目录的所有者设置给服务器就可以了。</p>
+
+<p>很简单，登录 putty，使用chown -R www /home/wwwroot/网站目录名。</p>
+
+<p>最后总结下，问题虽然不断，并且也让我很纠结，但是在Eric的重打击和半放弃的情况下，我还是把它研究出来了，虽然方法都不是我想到了，但是也是根据自己查到的各
+种方法，进行尝试，最后取得胜利了。 所以坚持就是希望。坚持就是胜利。以后还有更多需要我坚持的东西。我很期待充满希望的未来。</p>
+
+    <hr>
+    <div class="pagination">
+      <ul>
+        <ul>
+          
+            <li class="prev"><a href="/general/Linux-%E6%90%AD%E5%BB%BASVN-%E5%A4%9A%E7%89%88%E6%9C%AC%E5%BA%93/" title="Linux 搭建SVN 多版本库">&larr; Previous</a></li>
+          
+          
+
+            <li><a href="/archive">Archive</a></li>
+
+          
+          
+            <li class="next disabled"><a>Next &rarr;</a>
+          
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    
+<div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+  </div>
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2014-08-08</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/categories/#general-ref">general <span>21</span></a>
+</li>
+    
+    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+    </ul>
+  </div>
+</div>
+
+      </div>
+
+      <footer>
+        <p>&copy; Firstname Lastname 2013 
+          with help from <a href="http://github.com/wendal/gor" target="_blank" title="Gor -- Fast Blog">Gor</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+		  and Idea from <a href="http://ruhoh.com" target="_blank" title="The Definitive Technical Blogging Framework">ruhoh</a>
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    
+<script src="//cdnjscn.b0.upaiyun.com/libs/prettify/r298/prettify.min.js"></script>
+<script>
+  var pres = document.getElementsByTagName("pre");
+  for (var i=0; i < pres.length; ++i) {
+    pres[i].className = "prettyprint linenums";
+  }
+  prettyPrint();
+</script>
+
+    
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  var pluginUrl = '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
+  _gaq.push(['_require', 'inpage_linkid', pluginUrl]);
+  _gaq.push(['_setAccount', 'UA-123-12']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </body>
+</html>

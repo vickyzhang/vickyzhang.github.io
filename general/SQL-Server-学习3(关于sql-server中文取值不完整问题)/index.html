@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>About Me</title>
+    <title>SQL Server 学习3(关于sql server中文取值不完整问题)</title>
   
     <meta name="author" content="Firstname Lastname">
 
@@ -63,9 +63,9 @@
 
             
               
-  <li class="active"><a href="/about" class="active">About Me</a></li>
 
 
+  <li><a href="/about">About Me</a></li>
 
 
             
@@ -77,15 +77,87 @@
     <div class="container">
 
       <div class="content">
-        
-<div class="page-header">
-  <h1>About Me </h1>
+        <div class="page-header">
+  <h1>SQL Server 学习3(关于sql server中文取值不完整问题) </h1>
 </div>
 
 <div class="row">
-  <div class="span12">
-    <p>Hello, how are you?</p>
+  <div class="span8">
+    <p>PHP通过ODBC连接SQL Server 数据库，查询结果中文显示不完整的问题，今天折腾了一下午。</p>
 
+<p><img src="http://cyanme.com/content/uploadfile/201509/6f961442916215.png" alt="" /></p>
+
+<p>在百度，Googl上搜索了一下午都没明白怎么回事。都开始怀疑是不是 值本身有问题了。</p>
+
+<p>终于在无意中 看到 <code>SELECT</code> <code>CONVERT</code><code>(NVARCHAR(1),</code><code>'中国'</code><code>)写法 ，又想起同事友情提示，会不会是中文长度受限制。</code></p>
+
+<p>果然不出意外，就是字符长度问题。</p>
+
+<p>SELECT DEPTID,DESCR,MANAGER_ID,CONVERT(NVARCHAR(20),CST_DEPT_CLASS) as
+CST_DEPT_CLASS,DEPTID2,LASTUPDDTTM FROM PS_CST_DEPT_I_VW ORDER BY LASTUPDDTTM
+ASC</p>
+
+<p><img src="http://cyanme.com/content/uploadfile/201509/befa1442916511.png" alt="" /></p>
+
+<p>数据总算正常了，</p>
+
+<p>建议有中文的查询，都加上 CONVERT的长度限制，避免问题重现。</p>
+
+<p>不过这个工作还是明天来弄，今儿就先下班了。</p>
+
+    <hr>
+    <div class="pagination">
+      <ul>
+        <ul>
+          
+            <li class="prev"><a href="/general/php-%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E5%8C%96%E4%B8%BA%E6%95%B0%E5%AD%97/" title="php 字符串转化为数字">&larr; Previous</a></li>
+          
+          
+
+            <li><a href="/archive">Archive</a></li>
+
+          
+            <li class="next"><a href="/general/SQL-Server-%E5%AD%A6%E4%B9%A02%28%E6%95%B0%E6%8D%AE%E5%BA%93%E8%B4%B4%E8%A1%A8%29/" title="SQL Server 学习2(数据库贴表)">Next &rarr;</a></li>
+          
+          
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    
+<div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+  </div>
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2015-09-22</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/categories/#general-ref">general <span>21</span></a>
+</li>
+    
+    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+    </ul>
   </div>
 </div>
 

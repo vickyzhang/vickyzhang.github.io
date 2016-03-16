@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Linux 搭建SVN 多版本库</title>
+  
+    <meta name="author" content="Firstname Lastname">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css" type="text/css" rel="stylesheet" media="all">
+ 
+
+    <!-- Le fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+  </head>
+
+  <body>
+
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">Vicky&#39;s color</a>
+          <ul class="nav">
+            
+              
+
+
+  <li><a href="/archive">Archive</a></li>
+
+
+            
+              
+
+
+  <li><a href="/tags">Tags</a></li>
+
+
+            
+              
+
+
+  <li><a href="/categories">Categories</a></li>
+
+
+            
+              
+
+
+  <li><a href="/pages">Pages</a></li>
+
+
+            
+              
+
+
+  <li><a href="/about">About Me</a></li>
+
+
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        <div class="page-header">
+  <h1>Linux 搭建SVN 多版本库 </h1>
+</div>
+
+<div class="row">
+  <div class="span8">
+    <p>1.环境 centos5.5</p>
+
+<p>2.安装svn yum -y install subversion //安装svn</p>
+
+<p>3.配置 建立版本库目录</p>
+
+<pre><code>mkdir /var/svndata 
+
+svnserve -d -r /var/svndata //启动svn（多版本库方式启动） 
+</code></pre>
+
+<p>4.建立版本库 创建一个新的Subversion项目</p>
+
+<pre><code>svnadmin create /www/svndata/oplinux 
+
+配置允许用户vicky访问 
+
+cd /www/svndata/oplinux/conf 
+
+vi svnserve.conf 
+
+    anon-access=none 
+
+    auth-access=write 
+
+    password-db=passwd 
+</code></pre>
+
+<p>注：修改的文件前面不能有空格，否则启动svn server出错</p>
+
+<pre><code>vi passwd 
+
+    [users] 
+
+    # &amp;lt;user1&amp;gt;=&amp;lt;user1&amp;gt;  
+
+    # &amp;lt;user2&amp;gt;=&amp;lt;user2&amp;gt;  
+
+    vicky=123456 
+
+配置权限 vi authz 指令简介：此配置文件采用“基于路径的授权”策略，中括号里指定路径，以下列出对各用户的授权。 
+
+包括只读r，读写rw。没有列出的用户，则不允许访问。还可以对用户分组，具体请参考svn手册，以下是简单例子： 
+
+[groups] 
+
+admin = vicky //设置管理员组内成员有 vicky 
+
+[/] @admin=rw //给管理员组读写权限 
+
+ *=  // 其他权限为空 
+</code></pre>
+
+<p>5.客户端连接 svn co svn://ip/oplinux 用户名密码:123456</p>
+
+<p>6.实现SVN与WEB同步,可以CO一个出来,也可以直接配在仓库中</p>
+
+<pre><code>1)设置WEB服务器根目录为/www/webroot 
+
+2)checkout一份
+
+    SVN svn co svn://localhost/oplinux /www/webroot 
+
+    修改权限为WEB用户
+
+     chown -R apache:apache /www/webroot/oplinux 
+
+3)建立同步脚本 
+
+    cd /www/svndata/oplinux/hooks/ 
+
+    cp post-commit.tmpl post-commit 
+
+    编辑post-commit,在文件最后添加以下内容 
+
+    #!/bin/sh 
+
+    export LANG=en_US.UTF-8 
+
+    SVN=/usr/bin/svn WEB=/www/webroot/ 
+
+    $SVN update $WEB -–username vicky -–password 123456 
+
+    chown -R apache:apache $WEB 
+
+     增加脚本执行权限 
+
+    chmod +x post-commit
+</code></pre>
+
+    <hr>
+    <div class="pagination">
+      <ul>
+        <ul>
+          
+            <li class="prev"><a href="/general/%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5Linux-Mysql-%E6%8F%90%E7%A4%BA1045/" title="远程连接Linux Mysql 提示1045">&larr; Previous</a></li>
+          
+          
+
+            <li><a href="/archive">Archive</a></li>
+
+          
+            <li class="next"><a href="/general/%E5%9D%9A%E6%8C%81%E5%B0%B1%E6%98%AF%E5%B8%8C%E6%9C%9B%E3%80%82/" title="坚持就是希望。">Next &rarr;</a></li>
+          
+          
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    
+<div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+  </div>
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2014-11-04</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/categories/#general-ref">general <span>21</span></a>
+</li>
+    
+    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+    </ul>
+  </div>
+</div>
+
+      </div>
+
+      <footer>
+        <p>&copy; Firstname Lastname 2013 
+          with help from <a href="http://github.com/wendal/gor" target="_blank" title="Gor -- Fast Blog">Gor</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+		  and Idea from <a href="http://ruhoh.com" target="_blank" title="The Definitive Technical Blogging Framework">ruhoh</a>
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    
+<script src="//cdnjscn.b0.upaiyun.com/libs/prettify/r298/prettify.min.js"></script>
+<script>
+  var pres = document.getElementsByTagName("pre");
+  for (var i=0; i < pres.length; ++i) {
+    pres[i].className = "prettyprint linenums";
+  }
+  prettyPrint();
+</script>
+
+    
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  var pluginUrl = '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
+  _gaq.push(['_require', 'inpage_linkid', pluginUrl]);
+  _gaq.push(['_setAccount', 'UA-123-12']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </body>
+</html>

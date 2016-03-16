@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Mysql 学习笔记01-- 关于sql_mode</title>
+  
+    <meta name="author" content="Firstname Lastname">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css" type="text/css" rel="stylesheet" media="all">
+ 
+
+    <!-- Le fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+  </head>
+
+  <body>
+
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">Vicky&#39;s color</a>
+          <ul class="nav">
+            
+              
+
+
+  <li><a href="/archive">Archive</a></li>
+
+
+            
+              
+
+
+  <li><a href="/tags">Tags</a></li>
+
+
+            
+              
+
+
+  <li><a href="/categories">Categories</a></li>
+
+
+            
+              
+
+
+  <li><a href="/pages">Pages</a></li>
+
+
+            
+              
+
+
+  <li><a href="/about">About Me</a></li>
+
+
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        <div class="page-header">
+  <h1>Mysql 学习笔记01-- 关于sql_mode </h1>
+</div>
+
+<div class="row">
+  <div class="span8">
+    <p>对于SQL_MODE的设置，可以在MySQL的配置文件如my.cnf和my.ini中进行，也可以在客户端工具中进行，并且可以分别进行全局的设置或当前会话的设
+置。下面的命令可以用来查看当前SQL_MODE的设置情况。</p>
+
+<pre><code>select @@global.sql_mode; //查看全局模式  
+
+select @@session.sql_mode; //查看当前回话模式
+
+set @@global.sql_mode = ''; | set @@global.sql_mode = 'staict_trans_tables';
+//设置mysql为宽松模式或者严格模式
+</code></pre>
+
+<p>NO_UNSIGNED_SUBTRACTION 表示没有定义</p>
+
+<p>严格模式是指将SQL_MODE变量设置为STRICT_TRANS_TABLES或STRICT_ALL_TABLES中的至少一种。现在来看一下SQL_MODE
+可以设置的选项。</p>
+
+<p>STRICT_TRANS_TABLES：在该模式下，如果一个值不能插入到一个事务表(例如表的存储引擎为InnoDB)中，则中断当前的操作不影响非事务表(例如
+表的存储引擎为MyISAM)。</p>
+
+<p>ALLOW_INVALID_DATES：该选项并不完全对日期的合法性进行检查，只检查月份是否在1～12之间，日期是否在1～31之间。该模式仅对DATE和DA
+TETIME类型有效，而对TIMESTAMP无效，因为TIMESTAMP总是要求一个合法的输入。</p>
+
+<p>ANSI_QUOTES：启用ANSI_QUOTES后，不能用双引号来引用字符串，因为它将被解释为识别符</p>
+
+<p>ERROR_FOR_DIVISION_BY_ZERO：在INSERT或UPDATE过程中，如果数据被零除(或MOD(X，0))，则产生错误(否则为警告)。如
+果未给出该模式，那么数据被零除时MySQL返回NULL。如果用到INSERT IGNORE或UPDATE
+IGNORE中，MySQL生成被零除警告，但操作结果为NULL。</p>
+
+<p>HIGH_NOT_PRECEDENCE NOT：操作符的优先顺序是表达式。例如，NOT a BETWEEN b AND c被解释为NOT(a BETWEEN
+b AND c)，在一些旧版本MySQL中， 前面的表达式被解释为(NOT a)BETWEEN b AND c。启用HIGH_NOT_PRECEDENCE
+SQL模式，可以获得以前旧版本的更高优先级的结果。</p>
+
+<p>IGNORE_SPACE：函数名和括号“(”之间有空格。除了增加一些烦恼，这个选项好像没有任何好处，要访问保存为关键字的数据库、表或列名，用户必须引用该选项
+。例如某个表中有user这一列，而MySQL数据库中又有user这个函数， user会被解释为函数，如果想要选择user这一列，则需要引用。</p>
+
+<p>NO_AUTO_CREATE_USER：禁止GRANT创建密码为空的用户。</p>
+
+<p>NO_AUTO_VALUE_ON_ZERO：该选项影响列为自增长的插入。在默认设置下，插入0或NULL代表生成下一个自增长值。如果用户希望插入的值为0，而该
+列又是自增长的，那么这个选项就有用了。</p>
+
+<p>NO_BACKSLASH_ESCAPES：反斜杠“\”作为普通字符而非转义符，</p>
+
+    <hr>
+    <div class="pagination">
+      <ul>
+        <ul>
+          
+            <li class="prev"><a href="/general/Linux-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/" title="Linux 学习笔记02">&larr; Previous</a></li>
+          
+          
+
+            <li><a href="/archive">Archive</a></li>
+
+          
+            <li class="next"><a href="/general/Linux-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001/" title="Linux 学习笔记01">Next &rarr;</a></li>
+          
+          
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    
+<div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+  </div>
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2015-10-27</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/categories/#general-ref">general <span>21</span></a>
+</li>
+    
+    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+    </ul>
+  </div>
+</div>
+
+      </div>
+
+      <footer>
+        <p>&copy; Firstname Lastname 2013 
+          with help from <a href="http://github.com/wendal/gor" target="_blank" title="Gor -- Fast Blog">Gor</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+		  and Idea from <a href="http://ruhoh.com" target="_blank" title="The Definitive Technical Blogging Framework">ruhoh</a>
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    
+<script src="//cdnjscn.b0.upaiyun.com/libs/prettify/r298/prettify.min.js"></script>
+<script>
+  var pres = document.getElementsByTagName("pre");
+  for (var i=0; i < pres.length; ++i) {
+    pres[i].className = "prettyprint linenums";
+  }
+  prettyPrint();
+</script>
+
+    
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  var pluginUrl = '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
+  _gaq.push(['_require', 'inpage_linkid', pluginUrl]);
+  _gaq.push(['_setAccount', 'UA-123-12']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </body>
+</html>

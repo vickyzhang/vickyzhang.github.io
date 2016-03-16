@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>About Me</title>
+    <title>php 字符串转化为数字</title>
   
     <meta name="author" content="Firstname Lastname">
 
@@ -63,9 +63,9 @@
 
             
               
-  <li class="active"><a href="/about" class="active">About Me</a></li>
 
 
+  <li><a href="/about">About Me</a></li>
 
 
             
@@ -77,15 +77,103 @@
     <div class="container">
 
       <div class="content">
-        
-<div class="page-header">
-  <h1>About Me </h1>
+        <div class="page-header">
+  <h1>php 字符串转化为数字 </h1>
 </div>
 
 <div class="row">
-  <div class="span12">
-    <p>Hello, how are you?</p>
+  <div class="span8">
+    <p>PHP是一门弱语言，当你用字符串类型和数字类型直接比较时，PHP会进行自动类型转换，把字符串类型转换为数字类型，然后进行比较。</p>
 
+<p>但是这里要提到的是一个特殊的值：E，E作为科学计数法中的一种</p>
+
+<pre><code>$a = '6E01';
+if( 6 == $a ){
+    echo 'equal'.'&lt;br/&gt;';
+}else{
+    echo 'not equal'.'&lt;br/&gt;';
+}
+
+
+//输出 'not equal '
+$b = '5C01';
+if( $b == 5){
+    echo 'aaa';
+}else{
+    echo 'bbb';
+}
+
+
+//输出‘aaa’
+</code></pre>
+
+<p>代码中可以看出，第一个输出为not equal 原因是 $a 被自动转换为 60 ，而不是6
+那么这个时候 想要实现 字符串 6E01 == 6 就不能靠PHP 自动类型转换，而是需要强制类型转换</p>
+
+<pre><code>if( 6 ==  (int) $a ){
+    echo 'equal'.'&lt;br/&gt;';
+}else{
+    echo 'not equal'.'&lt;br/&gt;';
+}
+// 输出 equal
+</code></pre>
+
+<p>另外 Eric 提供intval() 方法，不过进我查证，强制装换(int) 执行速度更快。
+总的来说 是个小问题，记下来只是想多提醒自己 多注意细节。</p>
+
+    <hr>
+    <div class="pagination">
+      <ul>
+        <ul>
+          
+            <li class="prev"><a href="/general/Linux-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001/" title="Linux 学习笔记01">&larr; Previous</a></li>
+          
+          
+
+            <li><a href="/archive">Archive</a></li>
+
+          
+            <li class="next"><a href="/general/SQL-Server-%E5%AD%A6%E4%B9%A03%28%E5%85%B3%E4%BA%8Esql-server%E4%B8%AD%E6%96%87%E5%8F%96%E5%80%BC%E4%B8%8D%E5%AE%8C%E6%95%B4%E9%97%AE%E9%A2%98%29/" title="SQL Server 学习3(关于sql server中文取值不完整问题)">Next &rarr;</a></li>
+          
+          
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    
+<div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+  </div>
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2015-09-28</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/categories/#general-ref">general <span>21</span></a>
+</li>
+    
+    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+    </ul>
   </div>
 </div>
 

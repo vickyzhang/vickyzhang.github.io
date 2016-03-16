@@ -31,7 +31,7 @@
     <div class="navbar">
       <div class="navbar-inner">
         <div class="container">
-          <a class="brand" href="/">Blog Title</a>
+          <a class="brand" href="/">Vicky&#39;s color</a>
           <ul class="nav">
             
               
@@ -85,58 +85,274 @@
 <div class="row">
   <div class="span12">
     
-<h2>Gor已经为你编译完成了</h2>
-<p>
-  这段文字位于pages/index.html ,使用以下命令获取帮助或访问gor官网
-</p>
-<pre><code>gor help</code></pre>
 
 
 <h2>最近更新</h2>
 
 
 <div class="post">
-  <h3 class="title"><a href="/default/test/">test</a> <span class="date">2016-03-11</span></h3>
+  <h3 class="title"><a href="/general/apache-%E9%85%8D%E7%BD%AE%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA/">apache 配置虚拟主机</a> <span class="date">2015-12-08</span></h3>
 
-  <p>感谢你使用Gor编写博客
-本文位于 posts/first-blog.md , 你可以任意删掉,修改这个文件
-文件开头是当前文章的元数据</p>
+  <p>公司测试服务器默认80端口访问公司网站，近期新建一个项目，需要在测试服务器配置端口访问</p>
 
-<p>date为自动生成, 当然,你可以修改,这是你的自由
-permalink 可以是固定地址,也可以由</p>
+<p>首先，修改apache 配置文件 httpd.conf</p>
 
+<pre><code>Listen 81 //监听81端口 
 
-  <div class="more">
-    <a href="/default/test/" class="btn">read more..</a>
-  </div>
-</div>
-
-<div class="post">
-  <h3 class="title"><a href="/2013/new-born.html">你的第一篇博客</a> <span class="date">2013-02-08</span></h3>
-
-  <h1>感谢你使用Gor编写博客</h1>
-
-<h2>本文位于 posts/first-blog.md , 你可以任意删掉,修改这个文件</h2>
-
-<p>文件开头是当前文章的元数据</p>
-
-<ol>
-<li>date为自动生成, 当然,你可以修改,这是你的自由</li>
-<li>permalink 可以是固定地址,也可以由gor为你自动生成</li>
-<li>categories 就是分类, 可以多个</li>
-<li>tags 同理,多个标签也是很常见的</li>
-</ol>
-
-<p>请确保文件使用UTF8 without BOM编码</p>
-
-<h2>你可以通过执行下面的语句来新建一篇博客:</h2>
-
-<pre><code>gor post 文章标题
+&lt;VirtualHost *:81&gt;  
+    ServerAdmin www.59shopnc.com  
+    DocumentRoot &quot;/var/www2/shopnc&quot;  
+    ServerName www.59shopnc.com  
+    ErrorLog &quot;/tmp/logs/shopnc-error.log&quot;  
+    CustomLog &quot;/tmp/logs/shopnc-access.log&quot; common  
+    &lt;Directory &quot;/var/www2/shopnc&quot;&gt;  
+        Options Indexes FollowSymLinks  
+        AllowOverride None  
+        Order allow,deny  
+        Allow from all  //apache 2.2  
+        Require all granted  //apache 2.4  
+    &lt;/Directory&gt;  
+&lt;/VirtualHost&gt;  
 </code></pre>
 
 
   <div class="more">
-    <a href="/2013/new-born.html" class="btn">read more..</a>
+    <a href="/general/apache-%E9%85%8D%E7%BD%AE%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA/" class="btn">read more..</a>
+  </div>
+</div>
+
+<div class="post">
+  <h3 class="title"><a href="/general/Linux%E5%AD%A6%E4%B9%A003-vsftp-%E6%96%B0%E5%A2%9E%E7%94%A8%E6%88%B7/">Linux学习03 vsftp 新增用户</a> <span class="date">2015-12-07</span></h3>
+
+  <p>新增个ftp用户 也是弄了小半天</p>
+
+<pre><code># useradd test  //新增用户test
+# passwd tset
+</code></pre>
+
+<p>//输入密码设置</p>
+
+<pre><code># usermod -d /home/php //设置权限
+# usermod -s /sbin/nologin test //限制test只能登录ftp
+# usermod -s /sbin/bash test //回复test正常
+</code></pre>
+
+<p>限制用户只能访问/home/test，不能访问其他路径</p>
+
+<p>修改/etc/vsftpd/vsftpd.conf如下：</p>
+
+<pre><code>#chroot_list_enable=YES //限制访问自身目录  
+#chroot_list_file=/etc/vsftpd/vsftpd.chroot_list  
+</code></pre>
+
+
+  <div class="more">
+    <a href="/general/Linux%E5%AD%A6%E4%B9%A003-vsftp-%E6%96%B0%E5%A2%9E%E7%94%A8%E6%88%B7/" class="btn">read more..</a>
+  </div>
+</div>
+
+<div class="post">
+  <h3 class="title"><a href="/general/Linux-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/">Linux 学习笔记02</a> <span class="date">2015-11-17</span></h3>
+
+  <ol>
+<li>重启memcache ： /etc/init.d/memcached restart</li>
+<li>查看Apache日志 ：/var/log/error-log    或者先查看日志地址： /etc/httpd/conf/httpd.conf   查找 /CustomLog</li>
+<li>查看之前输入命令 ：history</li>
+<li>查找文件位置 ： find / -name &ldquo;httpd.conf&rdquo;</li>
+<li>清空日志文件： echo &ldquo;&rdquo; &gt; error.log</li>
+<li>给文件权限：  chmod +x a.sh<br /></li>
+<li>查看服务器定时任务 ： crontab -l</li>
+<li>编辑服务器定时任务 ： crontab -e
+
+<br />
+
+<br />
+
+<br /></li>
+</ol>
+
+
+  <div class="more">
+    <a href="/general/Linux-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/" class="btn">read more..</a>
+  </div>
+</div>
+
+<div class="post">
+  <h3 class="title"><a href="/general/Mysql-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001---%E5%85%B3%E4%BA%8Esql_mode/">Mysql 学习笔记01-- 关于sql_mode</a> <span class="date">2015-10-27</span></h3>
+
+  <p>对于SQL_MODE的设置，可以在MySQL的配置文件如my.cnf和my.ini中进行，也可以在客户端工具中进行，并且可以分别进行全局的设置或当前会话的设
+置。下面的命令可以用来查看当前SQL_MODE的设置情况。</p>
+
+<pre><code>select @@global.sql_mode; //查看全局模式  
+
+select @@session.sql_mode; //查看当前回话模式
+
+set @@global.sql_mode = ''; | set @@global.sql_mode = 'staict_trans_tables';
+//设置mysql为宽松模式或者严格模式
+</code></pre>
+
+<p>NO_UNSIGNED_SUBTRACTION 表示没有定义</p>
+
+<p>严格模式是指将SQL_MODE变量设置为STRICT_TRANS_TABLES或STRICT_ALL_TABLES中的至少一种。现在来看一下SQL_MODE
+可以设置的选项。</p>
+
+<p>STRICT_TRANS_TABLES：在该模式下，如果一个值不能插入到一个事务表(例如表的存储引擎为InnoDB)中，则中断当前的操作不影响非事务表(例如
+表的存储引擎为MyISAM)。</p>
+
+
+  <div class="more">
+    <a href="/general/Mysql-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001---%E5%85%B3%E4%BA%8Esql_mode/" class="btn">read more..</a>
+  </div>
+</div>
+
+<div class="post">
+  <h3 class="title"><a href="/general/Linux-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001/">Linux 学习笔记01</a> <span class="date">2015-10-27</span></h3>
+
+  <ol>
+<li><p>Linux 关机命令:</p>
+
+<p>init 0;
+shutdown -t 0;
+shutdown now;</p></li>
+
+<li><p>Linux 查看FTP状态是否正常: ps -ef | grep ftp;</p>
+
+<p>如果没有任何ftp关键字信息，则判断服务是否开启</p>
+
+<p>service vsftpd status</p>
+
+<p>开启：service vsftpd start</p></li>
+
+<li><p>Linux 查看系统时间 ：date</p></li>
+</ol>
+
+
+  <div class="more">
+    <a href="/general/Linux-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001/" class="btn">read more..</a>
+  </div>
+</div>
+
+<div class="post">
+  <h3 class="title"><a href="/general/php-%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E5%8C%96%E4%B8%BA%E6%95%B0%E5%AD%97/">php 字符串转化为数字</a> <span class="date">2015-09-28</span></h3>
+
+  <p>PHP是一门弱语言，当你用字符串类型和数字类型直接比较时，PHP会进行自动类型转换，把字符串类型转换为数字类型，然后进行比较。</p>
+
+<p>但是这里要提到的是一个特殊的值：E，E作为科学计数法中的一种</p>
+
+<pre><code>$a = '6E01';
+if( 6 == $a ){
+    echo 'equal'.'&lt;br/&gt;';
+}else{
+    echo 'not equal'.'&lt;br/&gt;';
+}
+
+
+//输出 'not equal '
+$b = '5C01';
+if( $b == 5){
+    echo 'aaa';
+}else{
+    echo 'bbb';
+}
+</code></pre>
+
+
+  <div class="more">
+    <a href="/general/php-%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E5%8C%96%E4%B8%BA%E6%95%B0%E5%AD%97/" class="btn">read more..</a>
+  </div>
+</div>
+
+<div class="post">
+  <h3 class="title"><a href="/general/SQL-Server-%E5%AD%A6%E4%B9%A03%28%E5%85%B3%E4%BA%8Esql-server%E4%B8%AD%E6%96%87%E5%8F%96%E5%80%BC%E4%B8%8D%E5%AE%8C%E6%95%B4%E9%97%AE%E9%A2%98%29/">SQL Server 学习3(关于sql server中文取值不完整问题)</a> <span class="date">2015-09-22</span></h3>
+
+  <p>PHP通过ODBC连接SQL Server 数据库，查询结果中文显示不完整的问题，今天折腾了一下午。</p>
+
+<p><img src="http://cyanme.com/content/uploadfile/201509/6f961442916215.png" alt="" /></p>
+
+<p>在百度，Googl上搜索了一下午都没明白怎么回事。都开始怀疑是不是 值本身有问题了。</p>
+
+<p>终于在无意中 看到 <code>SELECT</code> <code>CONVERT</code><code>(NVARCHAR(1),</code><code>'中国'</code><code>)写法 ，又想起同事友情提示，会不会是中文长度受限制。</code></p>
+
+<p>果然不出意外，就是字符长度问题。</p>
+
+<p>SELECT DEPTID,DESCR,MANAGER_ID,CONVERT(NVARCHAR(20),CST_DEPT_CLASS) as
+CST_DEPT_CLASS,DEPTID2,LASTUPDDTTM FROM PS_CST_DEPT_I_VW ORDER BY LASTUPDDTTM
+ASC</p>
+
+<p><img src="http://cyanme.com/content/uploadfile/201509/befa1442916511.png" alt="" /></p>
+
+<p>数据总算正常了，</p>
+
+
+  <div class="more">
+    <a href="/general/SQL-Server-%E5%AD%A6%E4%B9%A03%28%E5%85%B3%E4%BA%8Esql-server%E4%B8%AD%E6%96%87%E5%8F%96%E5%80%BC%E4%B8%8D%E5%AE%8C%E6%95%B4%E9%97%AE%E9%A2%98%29/" class="btn">read more..</a>
+  </div>
+</div>
+
+<div class="post">
+  <h3 class="title"><a href="/general/SQL-Server-%E5%AD%A6%E4%B9%A02%28%E6%95%B0%E6%8D%AE%E5%BA%93%E8%B4%B4%E8%A1%A8%29/">SQL Server 学习2(数据库贴表)</a> <span class="date">2015-09-22</span></h3>
+
+  <p>数据库中一张表的数据 导入 另一张数据表</p>
+
+<p>当两张表的字段完全一致的时候，我们可以直接使用：insert into tab_a select * from tab_b</p>
+
+<p>有字段不同的情况写写法也类似：</p>
+
+<pre><code>INSERT INTO PS_JOBCODE_LANG
+(SETID,JOBCODE,LANGUAGE_CD,EFFDT,DESCR,DESCRSHORT,GVT_OFFICIAL_DESCR )  
+select SETID,JOBCODE,'ZHS',EFFDT,DESCR,DESCRSHORT,' ' from PS_JOBCODE_TBL
+where JOBCODE not in (select JOBCODE from PS_JOBCODE_LANG )
+</code></pre>
+
+<p>说明：LANGUAGE_CD 中的 LANGUAGE_CD 值固定为&rsquo;ZHS&rsquo; ，而GVT_OFFICIAL_DESCR 的值为空 并且这两个字段不存在于
+PS_JOBCODE_TBL 中，所以直接把值填入即可。</p>
+
+<p>（SQL Server 和Mysql 均可使用）</p>
+
+
+  <div class="more">
+    <a href="/general/SQL-Server-%E5%AD%A6%E4%B9%A02%28%E6%95%B0%E6%8D%AE%E5%BA%93%E8%B4%B4%E8%A1%A8%29/" class="btn">read more..</a>
+  </div>
+</div>
+
+<div class="post">
+  <h3 class="title"><a href="/general/SQL-Server-%E5%AD%A6%E4%B9%A0/">SQL Server 学习</a> <span class="date">2015-09-10</span></h3>
+
+  <p>1.查询表结构 ： sp_help table_name;</p>
+
+<pre><code>查询结果如下 
+
+![](http://cyanme.com/content/uploadfile/201509/02c21441874839.png)
+</code></pre>
+
+<p>2.如上，Tpye 是nvarchar 类型 是 Unicode字符， 如其值为 中文的话，那么非英文字符串查询应该写为 like  N&rsquo;%你好%&lsquo;;</p>
+
+
+  <div class="more">
+    <a href="/general/SQL-Server-%E5%AD%A6%E4%B9%A0/" class="btn">read more..</a>
+  </div>
+</div>
+
+<div class="post">
+  <h3 class="title"><a href="/general/%E6%8A%80%E6%9C%AF%E8%A6%81%E6%9B%B4%E6%96%B0/">技术要更新</a> <span class="date">2015-09-02</span></h3>
+
+  <p>今天跟大E同学聊天的时候，想起自己上个月参加的面试，当时是有嗲尴尬的。说一下面试公司使用的技术吧。</p>
+
+<p>数据库方面用的Redis 的nosql 数据库。</p>
+
+<p>后台逻辑使用的Node.js 处理。</p>
+
+<p>最后还吐槽了一句：</p>
+
+<p>“PHP我们只拿来写接口”。</p>
+
+<p>有点伤心难过的同时也知道了自己的技术要更新。</p>
+
+<p>不过更新新技术之前，需要先把PHP玩的更透彻才可以。</p>
+
+
+  <div class="more">
+    <a href="/general/%E6%8A%80%E6%9C%AF%E8%A6%81%E6%9B%B4%E6%96%B0/" class="btn">read more..</a>
   </div>
 </div>
 
