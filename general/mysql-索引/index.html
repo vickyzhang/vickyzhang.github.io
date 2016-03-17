@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>查看svn服务器端的路径信息</title>
+    <title>mysql 索引</title>
   
     <meta name="author" content="Firstname Lastname">
 
@@ -78,77 +78,107 @@
 
       <div class="content">
         <div class="page-header">
-  <h1>查看svn服务器端的路径信息 </h1>
+  <h1>mysql 索引 </h1>
 </div>
 
 <div class="row">
   <div class="span8">
-    <p>最近还没被SVN服务器逼疯：</p>
-
-<p>问题1 ：svn commit 时提示 -This line, and those below, will be ignored--</p>
-
-<p>解决方案：</p>
-
-<p>首先，&rdquo;:q&rdquo;试图关闭关闭文件，</p>
-
-<p>这时会出现下列选项： Log message unchanged or not specified (a)bort, &copy;ontinue, (e)dit
-:</p>
-
-<p>然后选择c，会出现下列信息： Sending        xxx.xml Transmitting file data . Committed
-revision xxx.</p>
-
-<p>此时，代表文件xxx.xml已被成功提交。</p>
-
-<p>问题2： 查看SVN 当前路径：svn info Path</p>
-
-<p>问题3： 修改SVN 当前路径：  svn sw --relocate svn://old_ip/目录 svn://new_ip/目录</p>
-
-<p>svn常用命令：</p>
-
-<pre><code>svn checkout 地址 ----从svn上下载某个目录的最新版本
-
-svn checkout 地址 -r3345-----从svn上下载某个目录的3345版本
-
-svn update ------对当前的目录进行更新到最近版本
-
-svn diff -r3346&gt;&gt;svn.txt
------将当前的目录与svn工具中的该目录的版本号为3346的版本进行对比，并将差异写到文件svn.txt中
-
-svn log ------显示当前svn中所有的当前目录的版本
-
-svn info------显示当前目录最初从svn下载下来时，所下载的版本
-
-svn log -l 3------显示最近三条 log
-
-svn log-----//查看所有版本
-
-svn diff -r47326
-&gt;&gt;svnlog.txt------//将新版本与旧版本r47326进行比较，然后将区别写在svnlog.txt中
-
-svn add 文件名----如果有自己新添加的文件需要提交，那么提交之前，先对该文件进行svn add 文件名，然后再svn commit -m ''
-
-svn st----可以显示自己的版本跟线上版本区别
-
-svn diff tasks.xml-----将自己版本中的tasks.xml和线上的tasks.xml的区别进行分栏显示
-
-svn commit -m ''-----提交所有的文件
-
-svn commit a.cpp----只提交文件a.cpp
+    <pre><code>SHOW INDEX FROM t1  
 </code></pre>
+
+<p>优点：</p>
+
+<ol>
+<li>通过创建唯一索引，保证数据库表每行数据的唯一性。<br /></li>
+<li>提高查询速度。<br /></li>
+<li>在使用分组和排序时，可以减少查询中分组和排序时间。<br /></li>
+</ol>
+
+<p>缺点:</p>
+
+<ol>
+<li>维护索引需要耗费数据库资源。<br /></li>
+<li>索引需要占用磁盘空间。<br /></li>
+<li>当对表的说进行增删改的时候，因为要维护索引，索引速度会受到影响。<br /></li>
+</ol>
+
+<p>分类：</p>
+
+<ol>
+<li><p>普通索引和维护索引，主键索引是一种特殊的唯一索引，不允许空值。<br />
+    CREATE TABLE t1
+    (
+        id INT NOT NULL,
+        NAME CHAR(30) NOT NULL,
+        UNIQUE INDEX UniqIdx(id)   #创建唯一索引 索引名称UniqIdx 字段为id
+    );</p>
+
+<pre><code>SHOW CREATE TABLE t1; 
+    CREATE TABLE `t1` (                                             
+    `id` int(11) NOT NULL,                                     
+    `name` char(30) NOT NULL,                                  
+    UNIQUE KEY `UniqIdx` (`id`)                                
+) ENGINE=MyISAM DEFAULT CHARSET=utf8  
+</code></pre></li>
+
+<li><p>单列索引和复合索引。
+复合索引指多个字段上创建的索引，只有在查询条件中使用创建索引时的第一个字段，使用复合索引时遵循最左前缀集合。</p>
+
+<pre><code>CREATE TABLE t3 (
+  id INT NOT NULL,
+  name CHAR(30) NOT NULL,
+  age INT NOT NULL,
+  info VARCHAR (255),
+  INDEX MultiIdx (id, NAME, age (100))
+);
+SHOW CREATE TABLE t3;
+CREATE TABLE `t3` (                                              
+          `id` int(11) NOT NULL,                                 
+          `name` char(30) NOT NULL,                              
+          `age` int(11) NOT NULL,                                
+          `info` varchar(255) DEFAULT NULL,                      
+          KEY `MultiIdx` (`id`,`NAME`,`age`)  # where条件句里面只要有id的查询都会用到这个复合索引
+) ENGINE=MyISAM DEFAULT CHARSET=utf8
+</code></pre></li>
+
+<li><p>全文索引
+全文索引类型为FULLTEXT，在定义索引的列上支持值的全文查找，允许在这些索引列中插入重复值和空值。全文索引可以在CHAR、VARCHAR、TEXT类型列上创建。MYSQL只有MYISAM存储引擎支持全文索引</p>
+
+<pre><code>CREATE TABLE t4 (
+    id INT NOT NULL,
+    name CHAR(30) NOT NULL,
+    age INT NOT NULL,
+    info VARCHAR (255),
+    FULLTEXT INDEX FulltxtIdx (info)
+) ENGINE = MYISAM
+</code></pre></li>
+
+<li><p>空间索引
+空间索引是对空间数据类型的字段建立的索引，MYSQL中的空间数据类型有4种，分别是GEOMETRY、POINT、LINESTRING、POLYGON。MYSQL使用SPATIAL关键字进行扩展，使得能够用于创建正规索引类型的语法创建空间索引。空间索引必须在MYISAM类型的表中创建，而且空间类型的字段必须为非空</p>
+
+<pre><code>CREATE TABLE t5
+    (g GEOMETRY NOT NULL ,SPATIAL INDEX spatIdx(g))ENGINE=MYISAM;
+SHOW CREATE TABLE t5;
+CREATE TABLE `t5` (                                                                                            
+          `g` GEOMETRY NOT NULL,                                                                                       
+          SPATIAL KEY `spatIdx` (`g`)                                                                                  
+) ENGINE=MYISAM DEFAULT CHARSET=utf8  ;
+</code></pre></li>
+</ol>
 
     <hr>
     <div class="pagination">
       <ul>
         <ul>
           
-            <li class="prev"><a href="/general/%E7%9F%AD%E6%9A%82%E6%8E%A5%E8%A7%A6Extjs/" title="短暂接触Extjs">&larr; Previous</a></li>
           
+            <li class="prev disabled"><a>&larr; Previous</a></li>
           
 
             <li><a href="/archive">Archive</a></li>
 
           
-            <li class="next"><a href="/general/%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5Linux-Mysql-%E6%8F%90%E7%A4%BA1045/" title="远程连接Linux Mysql 提示1045">Next &rarr;</a></li>
+            <li class="next"><a href="/general/Mysql-%E8%A7%A6%E5%8F%91%E5%99%A8/" title="Mysql 触发器">Next &rarr;</a></li>
           
           
         </ul>
@@ -174,7 +204,7 @@ svn commit a.cpp----只提交文件a.cpp
   
   <div class="span4">
     <h4>Published</h4>
-    <div class="date"><span>2014-11-20</span></div>
+    <div class="date"><span>2016-03-16</span></div>
     <br>
     <h4>Categories</h4>
     <ul class="tag_box">
@@ -187,6 +217,10 @@ svn commit a.cpp----只提交文件a.cpp
     <br>
     <h4>Tags</h4>
     <ul class="tag_box">
+    
+      <li>
+  <a href="/tags/#mysql-ref">mysql <span>2</span></a>
+</li>
     
     </ul>
   </div>

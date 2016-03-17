@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>查看svn服务器端的路径信息</title>
+    <title>Mysql 触发器</title>
   
     <meta name="author" content="Firstname Lastname">
 
@@ -78,62 +78,50 @@
 
       <div class="content">
         <div class="page-header">
-  <h1>查看svn服务器端的路径信息 </h1>
+  <h1>Mysql 触发器 </h1>
 </div>
 
 <div class="row">
   <div class="span8">
-    <p>最近还没被SVN服务器逼疯：</p>
+    <p>之前写了一个数据库写操作脚本，定时执行，但是在检查结果时，发现我操作的数据有问题。多次检查脚本都确定没有问题，所以想到给数据表添加行触发器，检查脚本执行情况。</p>
 
-<p>问题1 ：svn commit 时提示 -This line, and those below, will be ignored--</p>
+<pre><code>USE rootdb;
+DROP TRIGGER oversee_emp_sup; 
+DELIMITER $  #定义定界符
+CREATE TRIGGER oversee_emp_sup AFTER UPDATE ON hr_employee
+FOR EACH ROW  
+BEGIN
+DECLARE msg VARCHAR(300);  
+    INSERT hr_oversee (emp_sn,old_value,new_value,craete_time) VALUES (new.emp_sn,old.emp_superior,new.emp_superior,new.modifytime);
+    IF(new.emp_superior = '' &amp;&amp;  old.emp_superior &lt;&gt; ''  ) THEN 
+    SET msg = &quot;用户更改上级错误.&quot;;  
+            SIGNAL SQLSTATE 'HY000' SET MESSAGE_TEXT = msg;  
+    END IF;
+END;
+$  #结束定界符
+</code></pre>
 
-<p>解决方案：</p>
+<p>监控数据更新时，往临时数据表中添加数据，并且出现上级字段为空是返回错误。目前还在监控执行中，不过已经可以确定不是我脚本的问题，我也甚是欣慰啊。</p>
 
-<p>首先，&rdquo;:q&rdquo;试图关闭关闭文件，</p>
+<p>这里就简单说下mysql触发器；</p>
 
-<p>这时会出现下列选项： Log message unchanged or not specified (a)bort, &copy;ontinue, (e)dit
-:</p>
+<p>触发器的4个要素：</p>
 
-<p>然后选择c，会出现下列信息： Sending        xxx.xml Transmitting file data . Committed
-revision xxx.</p>
+<ul>
+<li>监视地点（table）<br /></li>
+<li>监视事件（insert|update|delete）<br /></li>
+<li>触发时间（after|before）<br /></li>
+<li>触发事件（insert|update|delete）<br /></li>
+</ul>
 
-<p>此时，代表文件xxx.xml已被成功提交。</p>
+<p>语法：</p>
 
-<p>问题2： 查看SVN 当前路径：svn info Path</p>
-
-<p>问题3： 修改SVN 当前路径：  svn sw --relocate svn://old_ip/目录 svn://new_ip/目录</p>
-
-<p>svn常用命令：</p>
-
-<pre><code>svn checkout 地址 ----从svn上下载某个目录的最新版本
-
-svn checkout 地址 -r3345-----从svn上下载某个目录的3345版本
-
-svn update ------对当前的目录进行更新到最近版本
-
-svn diff -r3346&gt;&gt;svn.txt
------将当前的目录与svn工具中的该目录的版本号为3346的版本进行对比，并将差异写到文件svn.txt中
-
-svn log ------显示当前svn中所有的当前目录的版本
-
-svn info------显示当前目录最初从svn下载下来时，所下载的版本
-
-svn log -l 3------显示最近三条 log
-
-svn log-----//查看所有版本
-
-svn diff -r47326
-&gt;&gt;svnlog.txt------//将新版本与旧版本r47326进行比较，然后将区别写在svnlog.txt中
-
-svn add 文件名----如果有自己新添加的文件需要提交，那么提交之前，先对该文件进行svn add 文件名，然后再svn commit -m ''
-
-svn st----可以显示自己的版本跟线上版本区别
-
-svn diff tasks.xml-----将自己版本中的tasks.xml和线上的tasks.xml的区别进行分栏显示
-
-svn commit -m ''-----提交所有的文件
-
-svn commit a.cpp----只提交文件a.cpp
+<pre><code>create trigger triggerName
+after/before insert/update/delete on 表名
+for each row   #这句话在mysql是固定的
+begin
+sql语句;
+end;
 </code></pre>
 
     <hr>
@@ -141,14 +129,14 @@ svn commit a.cpp----只提交文件a.cpp
       <ul>
         <ul>
           
-            <li class="prev"><a href="/general/%E7%9F%AD%E6%9A%82%E6%8E%A5%E8%A7%A6Extjs/" title="短暂接触Extjs">&larr; Previous</a></li>
+            <li class="prev"><a href="/general/mysql-%E7%B4%A2%E5%BC%95/" title="mysql 索引">&larr; Previous</a></li>
           
           
 
             <li><a href="/archive">Archive</a></li>
 
           
-            <li class="next"><a href="/general/%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5Linux-Mysql-%E6%8F%90%E7%A4%BA1045/" title="远程连接Linux Mysql 提示1045">Next &rarr;</a></li>
+            <li class="next"><a href="/general/MyISAM%E5%92%8CInnoDB%E7%9A%84%E5%8C%BA%E5%88%AB/" title="MyISAM和InnoDB的区别">Next &rarr;</a></li>
           
           
         </ul>
@@ -174,7 +162,7 @@ svn commit a.cpp----只提交文件a.cpp
   
   <div class="span4">
     <h4>Published</h4>
-    <div class="date"><span>2014-11-20</span></div>
+    <div class="date"><span>2016-03-16</span></div>
     <br>
     <h4>Categories</h4>
     <ul class="tag_box">
@@ -187,6 +175,10 @@ svn commit a.cpp----只提交文件a.cpp
     <br>
     <h4>Tags</h4>
     <ul class="tag_box">
+    
+      <li>
+  <a href="/tags/#mysql-ref">mysql <span>2</span></a>
+</li>
     
     </ul>
   </div>

@@ -91,6 +91,96 @@
 
 
 <div class="post">
+  <h3 class="title"><a href="/general/mysql-%E7%B4%A2%E5%BC%95/">mysql 索引</a> <span class="date">2016-03-16</span></h3>
+
+  <pre><code>SHOW INDEX FROM t1  
+</code></pre>
+
+<p>优点：</p>
+
+<ol>
+<li>通过创建唯一索引，保证数据库表每行数据的唯一性。<br /></li>
+<li>提高查询速度。<br /></li>
+<li>在使用分组和排序时，可以减少查询中分组和排序时间。<br /></li>
+</ol>
+
+<p>缺点:</p>
+
+<ol>
+<li>维护索引需要耗费数据库资源。<br /></li>
+<li>索引需要占用磁盘空间。<br /></li>
+<li>当对表的说进行增删改的时候，因为要维护索引，索引速度会受到影响。<br /></li>
+</ol>
+
+<p>分类：</p>
+
+<ol>
+<li>普通索引和维护索引，主键索引是一种特殊的唯一索引，不允许空值。<br />
+    CREATE TABLE t1
+    (
+        id INT NOT NULL,
+        NAME CHAR(30) NOT NULL,
+        UNIQUE INDEX UniqIdx(id)   #创建唯一索引 索引名称UniqIdx 字段为id
+    );</li>
+</ol>
+
+
+  <div class="more">
+    <a href="/general/mysql-%E7%B4%A2%E5%BC%95/" class="btn">read more..</a>
+  </div>
+</div>
+
+<div class="post">
+  <h3 class="title"><a href="/general/Mysql-%E8%A7%A6%E5%8F%91%E5%99%A8/">Mysql 触发器</a> <span class="date">2016-03-16</span></h3>
+
+  <p>之前写了一个数据库写操作脚本，定时执行，但是在检查结果时，发现我操作的数据有问题。多次检查脚本都确定没有问题，所以想到给数据表添加行触发器，检查脚本执行情况。</p>
+
+<pre><code>USE rootdb;
+DROP TRIGGER oversee_emp_sup; 
+DELIMITER $  #定义定界符
+CREATE TRIGGER oversee_emp_sup AFTER UPDATE ON hr_employee
+FOR EACH ROW  
+BEGIN
+DECLARE msg VARCHAR(300);  
+    INSERT hr_oversee (emp_sn,old_value,new_value,craete_time) VALUES (new.emp_sn,old.emp_superior,new.emp_superior,new.modifytime);
+    IF(new.emp_superior = '' &amp;&amp;  old.emp_superior &lt;&gt; ''  ) THEN 
+    SET msg = &quot;用户更改上级错误.&quot;;  
+            SIGNAL SQLSTATE 'HY000' SET MESSAGE_TEXT = msg;  
+    END IF;
+END;
+$  #结束定界符
+</code></pre>
+
+<p>监控数据更新时，往临时数据表中添加数据，并且出现上级字段为空是返回错误。目前还在监控执行中，不过已经可以确定不是我脚本的问题，我也甚是欣慰啊。</p>
+
+
+  <div class="more">
+    <a href="/general/Mysql-%E8%A7%A6%E5%8F%91%E5%99%A8/" class="btn">read more..</a>
+  </div>
+</div>
+
+<div class="post">
+  <h3 class="title"><a href="/general/MyISAM%E5%92%8CInnoDB%E7%9A%84%E5%8C%BA%E5%88%AB/">MyISAM和InnoDB的区别</a> <span class="date">2016-03-16</span></h3>
+
+  <p>1.mysql默认引擎采用MyISAM。</p>
+
+<p>2.MyISAM不支持事务，InnoDB支持事务。InnoDB的autocommit 默认打开，即每条sql默认被封装为一个事务，自动提交。这样会影响速度，所以最好是吧多条sql语句显示放在begin和commit之间。</p>
+
+<p>3.InnoDB支持行锁，MyISAM只支持到表锁。MyISAM同一张表上的读锁和写锁互斥，并且默认写请求优先级高，所以MyISAM不是用于大量查询和修改并存的情况，会导致进程长时间阻塞。</p>
+
+<p>4.InnoDB支持外键，MyISAM不支持外键。</p>
+
+<p>5.InnoDB不支持全文索引，MyISAM支持。</p>
+
+<p>6.MyISAM有内置计数器，当count(*)没有where条件时，MyISAM的读取速度更快。</p>
+
+
+  <div class="more">
+    <a href="/general/MyISAM%E5%92%8CInnoDB%E7%9A%84%E5%8C%BA%E5%88%AB/" class="btn">read more..</a>
+  </div>
+</div>
+
+<div class="post">
   <h3 class="title"><a href="/general/apache-%E9%85%8D%E7%BD%AE%E8%99%9A%E6%8B%9F%E4%B8%BB%E6%9C%BA/">apache 配置虚拟主机</a> <span class="date">2015-12-08</span></h3>
 
   <p>公司测试服务器默认80端口访问公司网站，近期新建一个项目，需要在测试服务器配置端口访问</p>
@@ -286,73 +376,6 @@ ASC</p>
 
   <div class="more">
     <a href="/general/SQL-Server-%E5%AD%A6%E4%B9%A03%28%E5%85%B3%E4%BA%8Esql-server%E4%B8%AD%E6%96%87%E5%8F%96%E5%80%BC%E4%B8%8D%E5%AE%8C%E6%95%B4%E9%97%AE%E9%A2%98%29/" class="btn">read more..</a>
-  </div>
-</div>
-
-<div class="post">
-  <h3 class="title"><a href="/general/SQL-Server-%E5%AD%A6%E4%B9%A02%28%E6%95%B0%E6%8D%AE%E5%BA%93%E8%B4%B4%E8%A1%A8%29/">SQL Server 学习2(数据库贴表)</a> <span class="date">2015-09-22</span></h3>
-
-  <p>数据库中一张表的数据 导入 另一张数据表</p>
-
-<p>当两张表的字段完全一致的时候，我们可以直接使用：insert into tab_a select * from tab_b</p>
-
-<p>有字段不同的情况写写法也类似：</p>
-
-<pre><code>INSERT INTO PS_JOBCODE_LANG
-(SETID,JOBCODE,LANGUAGE_CD,EFFDT,DESCR,DESCRSHORT,GVT_OFFICIAL_DESCR )  
-select SETID,JOBCODE,'ZHS',EFFDT,DESCR,DESCRSHORT,' ' from PS_JOBCODE_TBL
-where JOBCODE not in (select JOBCODE from PS_JOBCODE_LANG )
-</code></pre>
-
-<p>说明：LANGUAGE_CD 中的 LANGUAGE_CD 值固定为&rsquo;ZHS&rsquo; ，而GVT_OFFICIAL_DESCR 的值为空 并且这两个字段不存在于
-PS_JOBCODE_TBL 中，所以直接把值填入即可。</p>
-
-<p>（SQL Server 和Mysql 均可使用）</p>
-
-
-  <div class="more">
-    <a href="/general/SQL-Server-%E5%AD%A6%E4%B9%A02%28%E6%95%B0%E6%8D%AE%E5%BA%93%E8%B4%B4%E8%A1%A8%29/" class="btn">read more..</a>
-  </div>
-</div>
-
-<div class="post">
-  <h3 class="title"><a href="/general/SQL-Server-%E5%AD%A6%E4%B9%A0/">SQL Server 学习</a> <span class="date">2015-09-10</span></h3>
-
-  <p>1.查询表结构 ： sp_help table_name;</p>
-
-<pre><code>查询结果如下 
-
-![](http://cyanme.com/content/uploadfile/201509/02c21441874839.png)
-</code></pre>
-
-<p>2.如上，Tpye 是nvarchar 类型 是 Unicode字符， 如其值为 中文的话，那么非英文字符串查询应该写为 like  N&rsquo;%你好%&lsquo;;</p>
-
-
-  <div class="more">
-    <a href="/general/SQL-Server-%E5%AD%A6%E4%B9%A0/" class="btn">read more..</a>
-  </div>
-</div>
-
-<div class="post">
-  <h3 class="title"><a href="/general/%E6%8A%80%E6%9C%AF%E8%A6%81%E6%9B%B4%E6%96%B0/">技术要更新</a> <span class="date">2015-09-02</span></h3>
-
-  <p>今天跟大E同学聊天的时候，想起自己上个月参加的面试，当时是有嗲尴尬的。说一下面试公司使用的技术吧。</p>
-
-<p>数据库方面用的Redis 的nosql 数据库。</p>
-
-<p>后台逻辑使用的Node.js 处理。</p>
-
-<p>最后还吐槽了一句：</p>
-
-<p>“PHP我们只拿来写接口”。</p>
-
-<p>有点伤心难过的同时也知道了自己的技术要更新。</p>
-
-<p>不过更新新技术之前，需要先把PHP玩的更透彻才可以。</p>
-
-
-  <div class="more">
-    <a href="/general/%E6%8A%80%E6%9C%AF%E8%A6%81%E6%9B%B4%E6%96%B0/" class="btn">read more..</a>
   </div>
 </div>
 
