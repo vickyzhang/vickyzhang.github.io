@@ -105,15 +105,15 @@
 <p>分类：</p>
 
 <ol>
-<li><p>普通索引和维护索引，主键索引是一种特殊的唯一索引，不允许空值。<br />
-    CREATE TABLE t1
-    (
-        id INT NOT NULL,
-        NAME CHAR(30) NOT NULL,
-        UNIQUE INDEX UniqIdx(id)   #创建唯一索引 索引名称UniqIdx 字段为id
-    );</p>
+<li><p>普通索引和维护索引，主键索引是一种特殊的唯一索引，不允许空值。</p>
 
-<pre><code>SHOW CREATE TABLE t1; 
+<pre><code>CREATE TABLE t1
+(
+    id INT NOT NULL, 
+    NAME CHAR(30) NOT NULL, 
+    UNIQUE INDEX UniqIdx(id)   #创建唯一索引 索引名称UniqIdx 字段为id
+); 
+SHOW CREATE TABLE t1; 
     CREATE TABLE `t1` (                                             
     `id` int(11) NOT NULL,                                     
     `name` char(30) NOT NULL,                                  
