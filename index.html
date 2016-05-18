@@ -91,6 +91,191 @@
 
 
 <div class="post">
+  <h3 class="title"><a href="/general/workerman-%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81/">workerman 浏览器消息推送</a> <span class="date">2016-05-18</span></h3>
+
+  <p>公司直播室网站，在直播室留言区需要使用socket推送功能。
+我去公司之前，同事们已经布置好workerman的环境，没得选择我使用了workerman 作为我的socket推送服务器。</p>
+
+<p>直播室聊天室相较于其他聊天室多了一个消息审核功能。也就是我发出的消息只能先推送到管理员处，由管理员审核后才能推送给所有观众。</p>
+
+<p>所以实现的流程 发送-入库-推送给管理员-审核/删除-推送给所有人。
+由于workerman提供的手册显示，他的浏览器推送支持推送给一个人，和推送给所有人，但是我们同时有多个直播室管理员在线，消息应该是推送给所有管理员，任一管理员审核后推送给所有人。所有在第一次使用workerman推送给所有管理员的时候，我在PHP代码中用了循环推送。测试使用时一切正常。只是推送速度有点慢，但是功能是没有问题。</p>
+
+<p>但是每到晚上8点左右，迎来了直播室观看高峰期，公屏上互动信息变多，推送消息频率增加。这个时候，会发现推送给管理员的数据会部分丢失。并且打开浏览器调试模式会发现浏览器一直发送socket请求。</p>
+
+<p>在确认代码无误的情况下，我多次找问题，实验都以失败告终。
+最后我觉得把循环推送管理员的地方做修改，在workerman的start.php循环，而不是在我的代码里循环请求推送。感天动地，问题终于得到解决。</p>
+
+<p>原来是因为workerman是用的curl请求推送，我在php代码循环请求curl链接，导致服务器堵塞。而我改在workerman服务端循环，相关于我只发起一个请求，他在服务器端多次推送。</p>
+
+<pre><code>//前端js
+&lt;script src='http://cdn.bootcss.com/socket.io/1.3.7/socket.io.js'&gt;&lt;/script&gt;
+&lt;script&gt;
+    // 连接服务端
+    var socket = io('http://workerman.net:2120');
+    // uid可以是自己网站的用户id，以便针对uid推送以及统计在线人数
+    uid = 123;
+    // socket连接后以uid登录
+    socket.on('connect', function(){
+        socket.emit('login', uid);
+    });
+    // 后端推送来消息时
+    socket.on('new_msg', function(msg){
+        console.log(&quot;收到消息：&quot;+msg);
+    });
+    // 后端推送来在线数据时
+    socket.on('update_online_count', function(online_stat){
+        console.log(online_stat);
+    });
+&lt;/script&gt;
+</code></pre>
+
+
+  <div class="more">
+    <a href="/general/workerman-%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81/" class="btn">read more..</a>
+  </div>
+</div>
+
+<div class="post">
+  <h3 class="title"><a href="/general/coreseek-window%E5%AE%89%E8%A3%85/">coreseek window安装</a> <span class="date">2016-04-08</span></h3>
+
+  <p>1.下载地址：（64/32位电脑都下载32位的）<br />
+<a href="http://www.coreseek.cn/products-install/install_on_windows/">http://www.coreseek.cn/products-install/install_on_windows/</a></p>
+
+<p>2.解压文件，并且重命名为sphinx  把文件移动到自己的项目目录d:\wamp\www</p>
+
+<p>3.运行 进入项目目录，进入sphinx 文件夹，执行set PATH=%CD%\bin;%PATH%&ldquo;。设置path，目的是为了能够调用bin目录下的 cat.exe、iconv.exe 等</p>
+
+<p>4.配置index索引,在sphink\coreseek-3.2.13-win32\etc 下编辑csft_mysql.conf</p>
+
+<pre><code>#源定义
+source othink
+{
+    type                    = mysql
+
+    sql_host                = localhost
+    sql_user                = root
+    sql_pass                =
+    sql_db                  = othink
+    sql_port                = 3306
+    sql_query_pre           = SET NAMES gbk
+
+    sql_query               = SELECT id,group_id,title,description FROM onethink_document
+                                            #sql_query第一列id需为整数
+                                            #title、content作为字符串/文本字段，被全文索引
+    sql_attr_uint           = group_id          #从SQL读取到的值必须为整数
+    #sql_attr_timestamp     = date_added      #从SQL读取到的值必须为整数，作为时间属性
+
+    sql_query_info          = SELECT * FROM onethink_document WHERE id=$id  #命令行查询时，从数据库读取原始数据信息
+}
+
+#index定义
+index othink
+{
+    source          = othink             #对应的source名称
+    path            = var/data/mysql
+    docinfo         = extern
+    mlock           = 0
+    morphology      = none
+    min_word_len        = 1
+    html_strip              = 0
+    #charset_dictpath = /usr/local/mmseg3/etc/  #BSD、Linux环境下设置，/符号结尾
+    charset_dictpath    = d:/wamp/www/sphinx/coreseek-3.2.13-win32/etc/        #Windows环境下设置，/符号结尾，最好给出绝对路径，例如：C:/usr/local/coreseek/etc/...
+    charset_type        = zh_cn.utf-8
+    
+    
+}
+
+#全局index定义
+indexer
+{
+    mem_limit           = 128M
+}
+
+#searchd服务定义
+searchd
+{
+    listen                  =   9312
+    read_timeout        = 5
+    max_children        = 30
+    max_matches         = 1000
+    seamless_rotate     = 0
+    preopen_indexes     = 0
+    unlink_old          = 1
+    pid_file = var/log/searchd_mysql.pid
+    log = var/log/searchd_mysql.log
+    query_log = var/log/query_mysql.log
+}
+
+</code></pre>
+
+
+  <div class="more">
+    <a href="/general/coreseek-window%E5%AE%89%E8%A3%85/" class="btn">read more..</a>
+  </div>
+</div>
+
+<div class="post">
+  <h3 class="title"><a href="/general/gor-%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/">gor 简单使用说明</a> <span class="date">2016-04-07</span></h3>
+
+  <p>本来是想答个自己能玩的环境，但是弄了半天都没有弄好，所以听了桥仔的意见，用了我并不知道是什么的gor，使用起来和安装都很方便。</p>
+
+<p>为了我更好的记忆，下次不再让桥仔帮我远程，我还是决定记下来整个使用流程。</p>
+
+<p>首先：<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;在下载gor.exe ,并且放在项目目录里面。<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;然后把目录写入环境变量。<br />
+然后：<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;把自己的md文件放入项目目录中的posts文件夹下<br />
+最后：<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;打开cmd  进入项目目录文件夹下
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;执行：</p>
+
+<pre><code class="language-cmd">    gor http #这样使网站能通过浏览器浏览
+    gor compile #这个是编译posts下面的md文件
+    gor http #类似于刷新网络的功能
+</code></pre>
+
+
+  <div class="more">
+    <a href="/general/gor-%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/" class="btn">read more..</a>
+  </div>
+</div>
+
+<div class="post">
+  <h3 class="title"><a href="/general/gbk%E5%92%8Cutf-8%E8%BD%AC%E7%A0%81/">gbk和utf-8转码</a> <span class="date">2016-04-07</span></h3>
+
+  <hr />
+
+<p>由于到了新的公司，新公司全都采用的是gbk字符.<br />
+这里需要了解到gbk和utf-8的转码PHP函数.<br />
+1.iconv() ;<br />
+string iconv ( string in_charset, string out_charset, string str )<br />
+注意第二个参数，除了可以指定要转化到的编码以外，还可以增加两个后缀：//TRANSLIT 和 //IGNORE，其中 //TRANSLIT<br />
+会自动将不能直接转化的字符变成一个或多个近似的字符，//IGNORE 会忽略掉不能转化的字符，而默认效果是从第一个非法字符截断.</p>
+
+<pre><code class="language-php">iconv('UTF-8','GBK//IGNORE',$data);
+</code></pre>
+
+<p>2.iconv 相关函数</p>
+
+<pre><code class="language-php">echo $str= '你好,这里是卖咖啡!'; 
+echo '&lt;br /&gt;'; 
+echo iconv('GB2312', 'UTF-8', $str); //将字符串的编码从GB2312转到UTF-8 
+echo '&lt;br /&gt;'; 
+echo iconv_substr($str, 1, 1, 'UTF-8'); //按字符个数截取而非字节 
+print_r(iconv_get_encoding()); //得到当前页面编码信息 
+echo iconv_strlen($str, 'UTF-8'); //得到设定编码的字符串长度 
+
+</code></pre>
+
+
+  <div class="more">
+    <a href="/general/gbk%E5%92%8Cutf-8%E8%BD%AC%E7%A0%81/" class="btn">read more..</a>
+  </div>
+</div>
+
+<div class="post">
   <h3 class="title"><a href="/general/mysql-%E7%B4%A2%E5%BC%95/">mysql 索引</a> <span class="date">2016-03-16</span></h3>
 
   <pre><code>SHOW INDEX FROM t1  
@@ -272,118 +457,6 @@ $  #结束定界符
 
   <div class="more">
     <a href="/general/Linux-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B002/" class="btn">read more..</a>
-  </div>
-</div>
-
-<div class="post">
-  <h3 class="title"><a href="/general/Mysql-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001---%E5%85%B3%E4%BA%8Esql_mode/">Mysql 学习笔记01-- 关于sql_mode</a> <span class="date">2015-10-27</span></h3>
-
-  <p>对于SQL_MODE的设置，可以在MySQL的配置文件如my.cnf和my.ini中进行，也可以在客户端工具中进行，并且可以分别进行全局的设置或当前会话的设
-置。下面的命令可以用来查看当前SQL_MODE的设置情况。</p>
-
-<pre><code>select @@global.sql_mode; //查看全局模式  
-
-select @@session.sql_mode; //查看当前回话模式
-
-set @@global.sql_mode = ''; | set @@global.sql_mode = 'staict_trans_tables';
-//设置mysql为宽松模式或者严格模式
-</code></pre>
-
-<p>NO_UNSIGNED_SUBTRACTION 表示没有定义</p>
-
-<p>严格模式是指将SQL_MODE变量设置为STRICT_TRANS_TABLES或STRICT_ALL_TABLES中的至少一种。现在来看一下SQL_MODE
-可以设置的选项。</p>
-
-<p>STRICT_TRANS_TABLES：在该模式下，如果一个值不能插入到一个事务表(例如表的存储引擎为InnoDB)中，则中断当前的操作不影响非事务表(例如
-表的存储引擎为MyISAM)。</p>
-
-
-  <div class="more">
-    <a href="/general/Mysql-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001---%E5%85%B3%E4%BA%8Esql_mode/" class="btn">read more..</a>
-  </div>
-</div>
-
-<div class="post">
-  <h3 class="title"><a href="/general/Linux-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001/">Linux 学习笔记01</a> <span class="date">2015-10-27</span></h3>
-
-  <ol>
-<li><p>Linux 关机命令:</p>
-
-<p>init 0;
-shutdown -t 0;
-shutdown now;</p></li>
-
-<li><p>Linux 查看FTP状态是否正常: ps -ef | grep ftp;</p>
-
-<p>如果没有任何ftp关键字信息，则判断服务是否开启</p>
-
-<p>service vsftpd status</p>
-
-<p>开启：service vsftpd start</p></li>
-
-<li><p>Linux 查看系统时间 ：date</p></li>
-</ol>
-
-
-  <div class="more">
-    <a href="/general/Linux-%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B001/" class="btn">read more..</a>
-  </div>
-</div>
-
-<div class="post">
-  <h3 class="title"><a href="/general/php-%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E5%8C%96%E4%B8%BA%E6%95%B0%E5%AD%97/">php 字符串转化为数字</a> <span class="date">2015-09-28</span></h3>
-
-  <p>PHP是一门弱语言，当你用字符串类型和数字类型直接比较时，PHP会进行自动类型转换，把字符串类型转换为数字类型，然后进行比较。</p>
-
-<p>但是这里要提到的是一个特殊的值：E，E作为科学计数法中的一种</p>
-
-<pre><code>$a = '6E01';
-if( 6 == $a ){
-    echo 'equal'.'&lt;br/&gt;';
-}else{
-    echo 'not equal'.'&lt;br/&gt;';
-}
-
-
-//输出 'not equal '
-$b = '5C01';
-if( $b == 5){
-    echo 'aaa';
-}else{
-    echo 'bbb';
-}
-</code></pre>
-
-
-  <div class="more">
-    <a href="/general/php-%E5%AD%97%E7%AC%A6%E4%B8%B2%E8%BD%AC%E5%8C%96%E4%B8%BA%E6%95%B0%E5%AD%97/" class="btn">read more..</a>
-  </div>
-</div>
-
-<div class="post">
-  <h3 class="title"><a href="/general/SQL-Server-%E5%AD%A6%E4%B9%A03%28%E5%85%B3%E4%BA%8Esql-server%E4%B8%AD%E6%96%87%E5%8F%96%E5%80%BC%E4%B8%8D%E5%AE%8C%E6%95%B4%E9%97%AE%E9%A2%98%29/">SQL Server 学习3(关于sql server中文取值不完整问题)</a> <span class="date">2015-09-22</span></h3>
-
-  <p>PHP通过ODBC连接SQL Server 数据库，查询结果中文显示不完整的问题，今天折腾了一下午。</p>
-
-<p><img src="http://cyanme.com/content/uploadfile/201509/6f961442916215.png" alt="" /></p>
-
-<p>在百度，Googl上搜索了一下午都没明白怎么回事。都开始怀疑是不是 值本身有问题了。</p>
-
-<p>终于在无意中 看到 <code>SELECT</code> <code>CONVERT</code><code>(NVARCHAR(1),</code><code>'中国'</code><code>)写法 ，又想起同事友情提示，会不会是中文长度受限制。</code></p>
-
-<p>果然不出意外，就是字符长度问题。</p>
-
-<p>SELECT DEPTID,DESCR,MANAGER_ID,CONVERT(NVARCHAR(20),CST_DEPT_CLASS) as
-CST_DEPT_CLASS,DEPTID2,LASTUPDDTTM FROM PS_CST_DEPT_I_VW ORDER BY LASTUPDDTTM
-ASC</p>
-
-<p><img src="http://cyanme.com/content/uploadfile/201509/befa1442916511.png" alt="" /></p>
-
-<p>数据总算正常了，</p>
-
-
-  <div class="more">
-    <a href="/general/SQL-Server-%E5%AD%A6%E4%B9%A03%28%E5%85%B3%E4%BA%8Esql-server%E4%B8%AD%E6%96%87%E5%8F%96%E5%80%BC%E4%B8%8D%E5%AE%8C%E6%95%B4%E9%97%AE%E9%A2%98%29/" class="btn">read more..</a>
   </div>
 </div>
 
