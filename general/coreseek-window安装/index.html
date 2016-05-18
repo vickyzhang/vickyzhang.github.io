@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>coreseek window安装</title>
+  
+    <meta name="author" content="Firstname Lastname">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css" type="text/css" rel="stylesheet" media="all">
+ 
+
+    <!-- Le fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+  </head>
+
+  <body>
+
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">Vicky&#39;s color</a>
+          <ul class="nav">
+            
+              
+
+
+  <li><a href="/archive">Archive</a></li>
+
+
+            
+              
+
+
+  <li><a href="/tags">Tags</a></li>
+
+
+            
+              
+
+
+  <li><a href="/categories">Categories</a></li>
+
+
+            
+              
+
+
+  <li><a href="/pages">Pages</a></li>
+
+
+            
+              
+
+
+  <li><a href="/about">About Me</a></li>
+
+
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        <div class="page-header">
+  <h1>coreseek window安装 </h1>
+</div>
+
+<div class="row">
+  <div class="span8">
+    <p>1.下载地址：（64/32位电脑都下载32位的）<br />
+<a href="http://www.coreseek.cn/products-install/install_on_windows/">http://www.coreseek.cn/products-install/install_on_windows/</a></p>
+
+<p>2.解压文件，并且重命名为sphinx  把文件移动到自己的项目目录d:\wamp\www</p>
+
+<p>3.运行 进入项目目录，进入sphinx 文件夹，执行set PATH=%CD%\bin;%PATH%&ldquo;。设置path，目的是为了能够调用bin目录下的 cat.exe、iconv.exe 等</p>
+
+<p>4.配置index索引,在sphink\coreseek-3.2.13-win32\etc 下编辑csft_mysql.conf</p>
+
+<pre><code>#源定义
+source othink
+{
+    type                    = mysql
+
+    sql_host                = localhost
+    sql_user                = root
+    sql_pass                =
+    sql_db                  = othink
+    sql_port                = 3306
+    sql_query_pre           = SET NAMES gbk
+
+    sql_query               = SELECT id,group_id,title,description FROM onethink_document
+                                            #sql_query第一列id需为整数
+                                            #title、content作为字符串/文本字段，被全文索引
+    sql_attr_uint           = group_id          #从SQL读取到的值必须为整数
+    #sql_attr_timestamp     = date_added      #从SQL读取到的值必须为整数，作为时间属性
+
+    sql_query_info          = SELECT * FROM onethink_document WHERE id=$id  #命令行查询时，从数据库读取原始数据信息
+}
+
+#index定义
+index othink
+{
+    source          = othink             #对应的source名称
+    path            = var/data/mysql
+    docinfo         = extern
+    mlock           = 0
+    morphology      = none
+    min_word_len        = 1
+    html_strip              = 0
+    #charset_dictpath = /usr/local/mmseg3/etc/  #BSD、Linux环境下设置，/符号结尾
+    charset_dictpath    = d:/wamp/www/sphinx/coreseek-3.2.13-win32/etc/        #Windows环境下设置，/符号结尾，最好给出绝对路径，例如：C:/usr/local/coreseek/etc/...
+    charset_type        = zh_cn.utf-8
+    
+    
+}
+
+#全局index定义
+indexer
+{
+    mem_limit           = 128M
+}
+
+#searchd服务定义
+searchd
+{
+    listen                  =   9312
+    read_timeout        = 5
+    max_children        = 30
+    max_matches         = 1000
+    seamless_rotate     = 0
+    preopen_indexes     = 0
+    unlink_old          = 1
+    pid_file = var/log/searchd_mysql.pid
+    log = var/log/searchd_mysql.log
+    query_log = var/log/query_mysql.log
+}
+
+</code></pre>
+
+<p>5.将 searchd 安装成为一个服务。执行</p>
+
+<pre><code>bin\searchd --install --config d:/www/sphinx/coreseek-3.2.13-win32/etc/csft_mysql.conf
+</code></pre>
+
+<p>，安装成功后命令行窗口会提示&rdquo; services searchd installed successfully&rdquo;。注意：
+（1）、win7下命令行窗口需要以管理员身份运行，否则会出现”fatal openscmanager“错误而无法安装</p>
+
+<p>6.创建索引在命令行窗口下执行</p>
+
+<pre><code> bin\indexer -c etc\csft_mysql.conf othink 
+</code></pre>
+
+<p>，即：创建名为weibo的数据源的索引。如果需要创建 csft_mysql.conf 配置文件中的所有索引，刚使用 --all 替代 othink。</p>
+
+<pre><code>D:\www\sphinx\coreseek-3.2.13-win32&gt;bin\indexer -c etc\csft_mysql.conf othink
+Coreseek Fulltext 3.2 [ Sphinx 0.9.9-release (r2117)]
+Copyright (c) 2007-2011,
+Beijing Choice Software Technologies Inc (http://www.sphinx/coreseek-3.2.13-win32
+
+ using config file 'etc\csft_mysql.conf'...
+indexing index 'othink'...
+collected 8 docs, 0.0 MB
+sorted 0.0 Mhits, 100.0% done
+total 8 docs, 1381 bytes
+total 0.188 sec, 7319 bytes/sec, 42.40 docs/sec
+total 2 reads, 0.000 sec, 1.2 kb/call avg, 0.0 msec/call avg
+total 7 writes, 0.000 sec, 0.9 kb/call avg, 0.1 msec/call avg
+</code></pre>
+
+    <hr>
+    <div class="pagination">
+      <ul>
+        <ul>
+          
+            <li class="prev"><a href="/general/workerman-%E6%B5%8F%E8%A7%88%E5%99%A8%E6%B6%88%E6%81%AF%E6%8E%A8%E9%80%81/" title="workerman 浏览器消息推送">&larr; Previous</a></li>
+          
+          
+
+            <li><a href="/archive">Archive</a></li>
+
+          
+            <li class="next"><a href="/general/gor-%E7%AE%80%E5%8D%95%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E/" title="gor 简单使用说明">Next &rarr;</a></li>
+          
+          
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    
+<div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+  </div>
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2016-04-08</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/categories/#general-ref">general <span>28</span></a>
+</li>
+    
+    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/tags/#coreseek-window-ref">coreseek window <span>1</span></a>
+</li>
+    
+    </ul>
+  </div>
+</div>
+
+      </div>
+
+      <footer>
+        <p>&copy; Firstname Lastname 2013 
+          with help from <a href="http://github.com/wendal/gor" target="_blank" title="Gor -- Fast Blog">Gor</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+		  and Idea from <a href="http://ruhoh.com" target="_blank" title="The Definitive Technical Blogging Framework">ruhoh</a>
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    
+<script src="//cdnjscn.b0.upaiyun.com/libs/prettify/r298/prettify.min.js"></script>
+<script>
+  var pres = document.getElementsByTagName("pre");
+  for (var i=0; i < pres.length; ++i) {
+    pres[i].className = "prettyprint linenums";
+  }
+  prettyPrint();
+</script>
+
+    
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  var pluginUrl = '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
+  _gaq.push(['_require', 'inpage_linkid', pluginUrl]);
+  _gaq.push(['_setAccount', 'UA-123-12']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </body>
+</html>

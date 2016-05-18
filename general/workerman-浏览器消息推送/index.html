@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>workerman 浏览器消息推送</title>
+  
+    <meta name="author" content="Firstname Lastname">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link href="/assets/twitter/stylesheets/bootstrap.min.css" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/stylesheets/style.css" type="text/css" rel="stylesheet" media="all">
+<link href="/assets/twitter/widgets/google_prettify/stylesheets/twitter-bootstrap.css" type="text/css" rel="stylesheet" media="all">
+ 
+
+    <!-- Le fav and touch icons -->
+  <!-- Update these with your own images
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  -->
+  </head>
+
+  <body>
+
+    <div class="navbar">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="brand" href="/">Vicky&#39;s color</a>
+          <ul class="nav">
+            
+              
+
+
+  <li><a href="/archive">Archive</a></li>
+
+
+            
+              
+
+
+  <li><a href="/tags">Tags</a></li>
+
+
+            
+              
+
+
+  <li><a href="/categories">Categories</a></li>
+
+
+            
+              
+
+
+  <li><a href="/pages">Pages</a></li>
+
+
+            
+              
+
+
+  <li><a href="/about">About Me</a></li>
+
+
+            
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+
+      <div class="content">
+        <div class="page-header">
+  <h1>workerman 浏览器消息推送 </h1>
+</div>
+
+<div class="row">
+  <div class="span8">
+    
+公司直播室网站，在直播室留言区需要使用socket推送功能。
+我去公司之前，同事们已经布置好workerman的环境，没得选择我使用了workerman 作为我的socket推送服务器。
+
+直播室聊天室相较于其他聊天室多了一个消息审核功能。也就是我发出的消息只能先推送到管理员处，由管理员审核后才能推送给所有观众。
+
+所以实现的流程 发送-入库-推送给管理员-审核/删除-推送给所有人。
+由于workerman提供的手册显示，他的浏览器推送支持推送给一个人，和推送给所有人，但是我们同时有多个直播室管理员在线，消息应该是推送给所有管理员，任一管理员审核后推送给所有人。所有在第一次使用workerman推送给所有管理员的时候，我在PHP代码中用了循环推送。测试使用时一切正常。只是推送速度有点慢，但是功能是没有问题。
+
+但是每到晚上8点左右，迎来了直播室观看高峰期，公屏上互动信息变多，推送消息频率增加。这个时候，会发现推送给管理员的数据会部分丢失。并且打开浏览器调试模式会发现浏览器一直发送socket请求。
+
+在确认代码无误的情况下，我多次找问题，实验都以失败告终。
+最后我觉得把循环推送管理员的地方做修改，在workerman的start.php循环，而不是在我的代码里循环请求推送。感天动地，问题终于得到解决。
+
+原来是因为workerman是用的curl请求推送，我在php代码循环请求curl链接，导致服务器堵塞。而我改在workerman服务端循环，相关于我只发起一个请求，他在服务器端多次推送。
+
+
+```
+//前端js
+<script src='http://cdn.bootcss.com/socket.io/1.3.7/socket.io.js'></script>
+<script>
+    // 连接服务端
+    var socket = io('http://workerman.net:2120');
+    // uid可以是自己网站的用户id，以便针对uid推送以及统计在线人数
+    uid = 123;
+    // socket连接后以uid登录
+    socket.on('connect', function(){
+    	socket.emit('login', uid);
+    });
+    // 后端推送来消息时
+    socket.on('new_msg', function(msg){
+        console.log("收到消息："+msg);
+    });
+    // 后端推送来在线数据时
+    socket.on('update_online_count', function(online_stat){
+        console.log(online_stat);
+    });
+</script>
+```
+
+```
+//php推送代码
+<?php
+// 指明给谁推送，为空表示向所有在线用户推送，逗号分隔的用户id
+$to_uid = "1,2,3,4,5"; 
+// 推送的url地址，上线时改成自己的服务器地址
+$push_api_url = "http://workerman.net:2121/";
+$post_data = array(
+   "type" => "publish",
+   "content" => "这个是推送的测试数据",
+   "to" => $to_uid,  
+);
+$ch = curl_init ();
+curl_setopt ( $ch, CURLOPT_URL, $push_api_url );
+curl_setopt ( $ch, CURLOPT_POST, 1 );
+curl_setopt ( $ch, CURLOPT_HEADER, 0 );
+curl_setopt ( $ch, CURLOPT_RETURNTRANSFER, 1 );
+curl_setopt ( $ch, CURLOPT_POSTFIELDS, $post_data );
+$return = curl_exec ( $ch );
+curl_close ( $ch );
+var_export($return);
+```
+
+```
+//服务端的start.php
+$sender_io->on('workerStart', function(){
+    // 监听一个http端口
+    $inner_http_worker = new Worker('http://0.0.0.0:2121');
+    // 当http客户端发来数据时触发
+    $inner_http_worker->onMessage = function($http_connection, $data){
+        $_POST = $_POST ? $_POST : $_GET;
+        // 推送数据的url格式 type=publish&to=uid&content=xxxx
+        switch(@$_POST['type']){
+            case 'publish':
+                global $sender_io;
+                $to = @$_POST['to'];
+                $_POST['content'] = htmlspecialchars(@$_POST['content']);
+                // 有指定uid则向uid所在socket组发送数据
+                if($to){
+                    foreach(explode(',', $to) as $v){
+                        $sender_io->to($v)->emit('new_msg', $_POST['content']);
+                    }
+                // 否则向所有uid推送数据
+                }else{
+                    $sender_io->emit('new_msg', @$_POST['content']);
+                }
+                // http接口返回ok
+                return $http_connection->send('ok');
+        }
+        return $http_connection->send('fail');
+    };
+    // 执行监听
+    $inner_http_worker->listen();
+});
+```
+
+
+
+
+
+    <hr>
+    <div class="pagination">
+      <ul>
+        <ul>
+          
+          
+            <li class="prev disabled"><a>&larr; Previous</a></li>
+          
+
+            <li><a href="/archive">Archive</a></li>
+
+          
+            <li class="next"><a href="/general/coreseek-window%E5%AE%89%E8%A3%85/" title="coreseek window安装">Next &rarr;</a></li>
+          
+          
+        </ul>
+      </ul>
+    </div>
+    <hr>
+    
+<div id="disqus_thread"></div>
+<script>
+    var disqus_developer = 1;
+    var disqus_shortname = 'jekyllbootstrap'; // required: replace example with your forum shortname
+    /* * * DON'T EDIT BELOW THIS LINE * * */
+    (function() {
+        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+        dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="http://disqus.com" class="dsq-brlink">blog comments powered by <span class="logo-disqus">Disqus</span></a>
+
+  </div>
+  
+  <div class="span4">
+    <h4>Published</h4>
+    <div class="date"><span>2016-05-18</span></div>
+    <br>
+    <h4>Categories</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/categories/#general-ref">general <span>28</span></a>
+</li>
+    
+    </ul>
+    <br>
+    <h4>Tags</h4>
+    <ul class="tag_box">
+    
+      <li>
+  <a href="/tags/#socket-ref">socket <span>1</span></a>
+</li>
+    
+    </ul>
+  </div>
+</div>
+
+      </div>
+
+      <footer>
+        <p>&copy; Firstname Lastname 2013 
+          with help from <a href="http://github.com/wendal/gor" target="_blank" title="Gor -- Fast Blog">Gor</a>
+          and <a href="http://twitter.github.com/bootstrap/" target="_blank">Twitter Bootstrap</a>
+		  and Idea from <a href="http://ruhoh.com" target="_blank" title="The Definitive Technical Blogging Framework">ruhoh</a>
+        </p>
+      </footer>
+
+    </div> <!-- /container -->
+
+    
+<script src="//cdnjscn.b0.upaiyun.com/libs/prettify/r298/prettify.min.js"></script>
+<script>
+  var pres = document.getElementsByTagName("pre");
+  for (var i=0; i < pres.length; ++i) {
+    pres[i].className = "prettyprint linenums";
+  }
+  prettyPrint();
+</script>
+
+    
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  var pluginUrl = '//www.google-analytics.com/plugins/ga/inpage_linkid.js';
+  _gaq.push(['_require', 'inpage_linkid', pluginUrl]);
+  _gaq.push(['_setAccount', 'UA-123-12']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+  </body>
+</html>
